@@ -9,7 +9,6 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.jeanieiq.aquipax
-        provisioning_profile_specifier: Automatic
       node: v18.17.0
       xcode: latest
       cocoapods: default
@@ -22,12 +21,13 @@ workflows:
           npx cap sync ios
       - name: Install CocoaPods
         script: cd ios/App && pod install
+      - name: Set up code signing
+        script: xcode-project use-profiles --create
       - name: Build iOS IPA
         script: |
           xcode-project build-ipa \
             --workspace "ios/App/App.xcworkspace" \
-            --scheme "App" \
-            --config "Release"
+            --scheme "App"
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
