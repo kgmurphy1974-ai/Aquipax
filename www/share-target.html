@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#c9a84c">
+<title>Aquipax — Opening Scanner</title>
+<link rel="manifest" href="manifest.json?v=4">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#181614;font-family:'Jost',sans-serif;color:#f0ead8;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}
+.logo{font-size:11px;letter-spacing:4px;color:#c9a84c;text-transform:uppercase;margin-bottom:16px}
+.msg{font-size:18px;color:#f0ead8;margin-bottom:8px}
+.sub{font-size:13px;color:#8a8070}
+.spinner{width:32px;height:32px;border:2px solid rgba(201,168,76,0.2);border-top-color:#c9a84c;border-radius:50%;animation:spin 0.8s linear infinite;margin:20px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div>
+  <div class="logo">Aquipax by JeanieIQ</div>
+  <div class="msg">Opening receipt scanner...</div>
+  <div class="sub">Your shared image is ready to scan</div>
+  <div class="spinner"></div>
+</div>
+<script>
+// Handle the shared content — store image in sessionStorage then redirect to app
+async function handleShare() {
+  try {
+    const formData = await fetch(location.href, { method: 'POST' })
+      .then(r => r.formData()).catch(() => null);
+
+    // If POST data available (image shared)
+    if (formData) {
+      const file = formData.get('receipt');
+      if (file && file instanceof File) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          sessionStorage.setItem('sharedReceipt', JSON.stringify({
+            data: e.target.result.split(',')[1],
+            type: file.type,
+            name: file.name
+          }));
+          window.location.href = '/app.html#scanner';
+        };
+        reader.readAsDataURL(file);
+        return;
+      }
+    }
+
+    // Text or URL shared — just open app
+    const params = new URLSearchParams(location.search);
+    const title = params.get('title') || '';
+    const text = params.get('text') || '';
+    if (title || text) {
+      sessionStorage.setItem('sharedText', JSON.stringify({ title, text }));
+    }
+    window.location.href = '/app.html';
+  } catch(e) {
+    window.location.href = '/app.html';
+  }
+}
+
+handleShare();
+</script>
+</body>
+</html>
+<!-- ts:20260412_v6 -->

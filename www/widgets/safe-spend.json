@@ -1,0 +1,87 @@
+{
+  "type": "AdaptiveCard",
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.5",
+  "body": [
+    {
+      "type": "Container",
+      "style": "emphasis",
+      "bleed": true,
+      "items": [
+        {
+          "type": "TextBlock",
+          "text": "AQUIPAX",
+          "size": "Small",
+          "weight": "Bolder",
+          "color": "Accent",
+          "spacing": "None"
+        },
+        {
+          "type": "TextBlock",
+          "text": "${amount}",
+          "size": "ExtraLarge",
+          "weight": "Bolder",
+          "color": "Accent",
+          "spacing": "None"
+        },
+        {
+          "type": "TextBlock",
+          "text": "safe to spend this month",
+          "size": "Small",
+          "color": "Default",
+          "isSubtle": true,
+          "spacing": "None"
+        }
+      ]
+    },
+    {
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "Saving",
+              "size": "Small",
+              "isSubtle": true
+            },
+            {
+              "type": "TextBlock",
+              "text": "${savings}",
+              "size": "Medium",
+              "color": "Good",
+              "spacing": "None"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "Next bill",
+              "size": "Small",
+              "isSubtle": true
+            },
+            {
+              "type": "TextBlock",
+              "text": "${nextBill}",
+              "size": "Medium",
+              "spacing": "None"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.OpenUrl",
+      "title": "Open Aquipax",
+      "url": "https://glistening-elf-83b031.netlify.app/app.html"
+    }
+  ]
+}

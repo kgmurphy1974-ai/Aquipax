@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0d1f3c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Aquipax — Sign In</title>
+<link rel="manifest" href="manifest.json?v=4">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#0a1628;font-family:'Jost',sans-serif;color:#f0ead8}
+body{display:flex;align-items:center;justify-content:center;padding:24px;min-height:100vh;position:relative;overflow:hidden}
+
+/* ── Animated background ── */
+.bg-glow{position:fixed;inset:0;pointer-events:none;z-index:0}
+.bg-glow::before{content:'';position:absolute;top:-20%;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(26,127,232,0.12) 0%,transparent 65%);animation:glowPulse 4s ease-in-out infinite}
+.bg-glow::after{content:'';position:absolute;bottom:-10%;right:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(201,168,76,0.07) 0%,transparent 65%);animation:glowPulse 6s ease-in-out infinite reverse}
+@keyframes glowPulse{0%,100%{opacity:0.6;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.1)}}
+
+/* ── Particles ── */
+.particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.p{position:absolute;border-radius:50%;background:#1a7fe8;opacity:0;animation:pFloat linear infinite}
+@keyframes pFloat{0%{opacity:0;transform:translateY(100vh) scale(0)}10%{opacity:0.6}90%{opacity:0.1}100%{opacity:0;transform:translateY(-50px) scale(1)}}
+
+/* ── Logo glistening effect ── */
+.logo{text-align:center;margin-bottom:28px;position:relative}
+.logo-wrap{display:inline-block;position:relative}
+.logo img{width:180px;height:auto;display:block;filter:drop-shadow(0 0 28px rgba(201,168,76,0.6)) drop-shadow(0 0 56px rgba(26,127,232,0.35));animation:logoGlow 3s ease-in-out infinite}
+@keyframes logoGlow{
+  0%,100%{filter:drop-shadow(0 0 20px rgba(201,168,76,0.5)) drop-shadow(0 0 40px rgba(26,127,232,0.3));transform:scale(1)}
+  50%{filter:drop-shadow(0 0 35px rgba(201,168,76,0.8)) drop-shadow(0 0 60px rgba(26,127,232,0.5));transform:scale(1.04)}
+}
+
+/* ── Glisten sparkles ── */
+.sparkle{position:absolute;width:4px;height:4px;border-radius:50%;background:#fff;pointer-events:none;animation:sparkleAnim ease-in-out infinite}
+@keyframes sparkleAnim{0%,100%{opacity:0;transform:scale(0)}50%{opacity:1;transform:scale(1)}}
+
+.logo-name{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;letter-spacing:4px;color:#e8f0ff;text-transform:uppercase;margin-top:10px}
+.logo-by{font-size:9px;letter-spacing:3px;color:#1a7fe8;font-weight:600;text-transform:uppercase;margin-top:2px}
+
+.card{width:100%;max-width:380px;position:relative;z-index:1}
+h2{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:#f0ead8;margin-bottom:6px;text-align:center}
+.sub{font-size:13px;color:#7a9cc0;text-align:center;margin-bottom:28px}
+label{display:block;font-size:9px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:6px}
+input{width:100%;background:#0d1f3c;border:1px solid #1a3a6b;border-radius:8px;padding:13px 16px;font-size:14px;color:#f0ead8;font-family:'Jost',sans-serif;outline:none;margin-bottom:14px;transition:border-color 0.2s}
+input:focus{border-color:rgba(26,127,232,0.6)}
+input::placeholder{color:#2a4a7a}
+.btn{width:100%;background:#1a7fe8;border:none;border-radius:8px;padding:14px;font-size:10px;letter-spacing:3px;color:#ffffff;font-family:'Jost',sans-serif;font-weight:500;cursor:pointer;text-transform:uppercase;transition:opacity 0.15s,background 0.2s;margin-top:4px}
+.btn:hover{background:#1565c0}
+.btn:active{opacity:0.82}
+.btn:disabled{opacity:0.5;cursor:default}
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0}
+.divider-line{flex:1;height:1px;background:#1a3a6b}
+.divider-text{font-size:10px;color:#3a5a8a;letter-spacing:1px}
+.ghost{width:100%;background:transparent;border:1px solid #1a3a6b;border-radius:8px;padding:13px;font-size:10px;letter-spacing:2px;color:#7a9cc0;font-family:'Jost',sans-serif;cursor:pointer;text-transform:uppercase;transition:border-color 0.2s,color 0.2s}
+.ghost:hover{border-color:#1a7fe8;color:#f0ead8}
+.err{font-size:12px;color:#c05050;text-align:center;margin-bottom:12px;padding:8px;background:#1a0a0a;border:1px solid rgba(192,80,80,0.3);border-radius:6px;display:none}
+.ok{font-size:12px;color:#3a9a5a;text-align:center;margin-bottom:12px;padding:8px;background:#0a1a0e;border:1px solid rgba(58,154,90,0.3);border-radius:6px;display:none}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,0.2);border-top-color:#ffffff;border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.reset-link{text-align:center;margin-top:14px}
+.reset-link button{background:none;border:none;color:#3a5a8a;font-size:11px;cursor:pointer;font-family:'Jost',sans-serif;text-decoration:underline;padding:0;transition:color 0.2s}
+.reset-link button:hover{color:#7a9cc0}
+.powered{text-align:center;margin-top:28px;font-size:9px;letter-spacing:2px;color:#1a3a6b;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div class="particles" id="particles"></div>
+
+<div class="card">
+  <div class="logo">
+    <div class="logo-wrap" id="logoWrap">
+      <img src="aquipax_logo.png" alt="Aquipax" draggable="false">
+    </div>
+    <div class="logo-name">Aquipax</div>
+    <div class="logo-by">by JeanieIQ</div>
+  </div>
+
+  <div id="panel-signin">
+    <h2>Welcome back</h2>
+    <p class="sub">Sign in to your Aquipax account</p>
+    <div class="err" id="err-signin"></div>
+    <label for="si-email">Email address</label>
+    <input type="email" id="si-email" placeholder="you@example.com" autocomplete="email">
+    <label for="si-pass">Password</label>
+    <input type="password" id="si-pass" placeholder="••••••••" autocomplete="current-password">
+    <button class="btn" id="btn-signin" onclick="doSignIn()">Sign in</button>
+    <div class="reset-link"><button onclick="showPanel('reset')">Forgot password?</button></div>
+    <div class="divider"><div class="divider-line"></div><div class="divider-text">new here?</div><div class="divider-line"></div></div>
+    <button class="ghost" onclick="showPanel('signup')">Create an account →</button>
+  </div>
+
+  <div id="panel-signup" style="display:none">
+    <h2>Create account</h2>
+    <p class="sub">Join your team on Aquipax</p>
+    <div class="err" id="err-signup"></div>
+    <div class="ok" id="ok-signup"></div>
+    <label for="su-name">Your name</label>
+    <input type="text" id="su-name" placeholder="e.g. Shane" autocomplete="given-name">
+    <label for="su-email">Email address</label>
+    <input type="email" id="su-email" placeholder="you@example.com" autocomplete="email">
+    <label for="su-pass">Password</label>
+    <input type="password" id="su-pass" placeholder="Min 8 characters" autocomplete="new-password">
+    <button class="btn" id="btn-signup" onclick="doSignUp()">Create account</button>
+    <div class="divider"><div class="divider-line"></div><div class="divider-text">or</div><div class="divider-line"></div></div>
+    <button class="ghost" onclick="showPanel('signin')">← Back to sign in</button>
+  </div>
+
+  <div id="panel-reset" style="display:none">
+    <h2>Reset password</h2>
+    <p class="sub">We'll email you a reset link</p>
+    <div class="err" id="err-reset"></div>
+    <div class="ok" id="ok-reset"></div>
+    <label for="re-email">Email address</label>
+    <input type="email" id="re-email" placeholder="you@example.com" autocomplete="email">
+    <button class="btn" id="btn-reset" onclick="doReset()">Send reset link</button>
+    <div class="divider"><div class="divider-line"></div><div class="divider-line"></div></div>
+    <button class="ghost" onclick="showPanel('signin')">← Back to sign in</button>
+  </div>
+
+  <div class="powered">Powered by JeanieIQ</div>
+</div>
+
+<script>
+// ── CONFIGURATION — replace with your values from supabase.com ──
+const SUPABASE_URL     = 'https://facgysdopixzxviiljhh.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhY2d5c2RvcGl4enh2aWlsamhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5Nzc3NDQsImV4cCI6MjA5MTU1Mzc0NH0.MPcxAsfzlM_XkSSnG8hgGiU83wICKi8TERKw-J1KNHo';
+// ────────────────────────────────────────────────────────────────
+
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Already logged in? Send straight to app
+db.auth.getSession().then(({ data }) => {
+  if (data.session) location.href = '/app.html';
+});
+db.auth.onAuthStateChange((_, session) => {
+  if (session) location.href = '/app.html';
+});
+
+// Capture referral code from URL and store in sessionStorage
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get('ref');
+  if (ref) {
+    sessionStorage.setItem('aquipax_ref', ref);
+    // Show a friendly message
+    const banner = document.createElement('div');
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:rgba(58,154,90,0.15);border-bottom:1px solid rgba(58,154,90,0.3);padding:10px 20px;text-align:center;font-size:12px;color:#3a9a5a;z-index:100;font-family:Jost,sans-serif';
+    banner.textContent = '\uD83C\uDF81 You were invited by a friend \u2014 sign up for an extra 3 days on your free trial!';
+    document.body.appendChild(banner);
+  }
+})();
+
+function showPanel(name) {
+  ['signin','signup','reset'].forEach(p =>
+    document.getElementById('panel-'+p).style.display = p===name ? 'block' : 'none'
+  );
+}
+
+function setLoading(id, on, label) {
+  const b = document.getElementById(id);
+  b.disabled = on;
+  b.innerHTML = on ? '<span class="spinner"></span>Please wait…' : label;
+}
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.style.display = msg ? 'block' : 'none';
+}
+function showOk(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.style.display = msg ? 'block' : 'none';
+}
+
+async function doSignIn() {
+  const email = document.getElementById('si-email').value.trim();
+  const pass  = document.getElementById('si-pass').value;
+  showErr('err-signin','');
+  if (!email || !pass) { showErr('err-signin','Please enter your email and password.'); return; }
+  setLoading('btn-signin', true, 'Sign in');
+  const { error } = await db.auth.signInWithPassword({ email, password: pass });
+  setLoading('btn-signin', false, 'Sign in');
+  if (error) showErr('err-signin', error.message);
+}
+
+async function doSignUp() {
+  const name  = document.getElementById('su-name').value.trim();
+  const email = document.getElementById('su-email').value.trim();
+  const pass  = document.getElementById('su-pass').value;
+  showErr('err-signup',''); showOk('ok-signup','');
+  if (!name)  { showErr('err-signup','Please enter your name.'); return; }
+  if (!email) { showErr('err-signup','Please enter your email.'); return; }
+  if (pass.length < 8) { showErr('err-signup','Password must be at least 8 characters.'); return; }
+  setLoading('btn-signup', true, 'Create account');
+
+  // Check for referral code in URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const refCode = urlParams.get('ref') || sessionStorage.getItem('aquipax_ref');
+
+  const { data, error } = await db.auth.signUp({
+    email, password: pass,
+    options: { data: { full_name: name } }
+  });
+  setLoading('btn-signup', false, 'Create account');
+  if (error) { showErr('err-signup', error.message); return; }
+
+  // Track referral if code present
+  if (refCode && data?.user?.id) {
+    try {
+      await fetch('/api/track-referral', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          referralCode: refCode,
+          newUserId: data.user.id,
+          newUserEmail: email
+        })
+      });
+      sessionStorage.removeItem('aquipax_ref');
+    } catch(e) {
+      // Silent fail - don't block sign-up
+    }
+  }
+
+  showOk('ok-signup', refCode
+    ? 'Account created! You signed up via a friend\'s invite — you\'ll get an extra 3 days on your trial. Check your email to confirm.'
+    : 'Account created! Check your email to confirm, then sign in.');
+}
+
+async function doReset() {
+  const email = document.getElementById('re-email').value.trim();
+  showErr('err-reset',''); showOk('ok-reset','');
+  if (!email) { showErr('err-reset','Please enter your email address.'); return; }
+  setLoading('btn-reset', true, 'Send reset link');
+  const { error } = await db.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/index.html'
+  });
+  setLoading('btn-reset', false, 'Send reset link');
+  if (error) showErr('err-reset', error.message);
+  else showOk('ok-reset','Reset link sent — check your inbox.');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const visible = ['signin','signup','reset'].find(p =>
+    document.getElementById('panel-'+p).style.display !== 'none'
+  );
+  if (visible === 'signin') doSignIn();
+  else if (visible === 'signup') doSignUp();
+  else if (visible === 'reset') doReset();
+});
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+
+// ── Particles ──
+(function(){
+  const container = document.getElementById('particles');
+  if (!container) return;
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'p';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.width = p.style.height = (1 + Math.random() * 3) + 'px';
+    p.style.animationDuration = (8 + Math.random() * 14) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    // Alternate between blue and gold particles
+    p.style.background = Math.random() > 0.6 ? '#c9a84c' : '#1a7fe8';
+    container.appendChild(p);
+  }
+})();
+
+// ── Sparkles around logo ──
+(function(){
+  const wrap = document.getElementById('logoWrap');
+  if (!wrap) return;
+  const positions = [
+    {top:'-8px',left:'20px'},{top:'-5px',right:'15px'},
+    {top:'30%',left:'-10px'},{top:'30%',right:'-10px'},
+    {bottom:'5px',left:'25px'},{bottom:'0px',right:'20px'},
+    {top:'10px',left:'50%'},{top:'60%',left:'-8px'}
+  ];
+  positions.forEach((pos, i) => {
+    const s = document.createElement('div');
+    s.className = 'sparkle';
+    Object.assign(s.style, pos);
+    s.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+    s.style.animationDelay = (Math.random() * 2) + 's';
+    s.style.background = '#c9a84c';
+    s.style.width = s.style.height = (2 + Math.random() * 3) + 'px';
+    wrap.appendChild(s);
+  });
+})();
+</script>
+</body>
+</html>
+<!-- v1776008662 -->
+<!-- ts:20260412_v6 -->

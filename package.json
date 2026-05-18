@@ -1,0 +1,23 @@
+{
+  "name": "aquipax",
+  "version": "1.0.0",
+  "description": "Aquipax by JeanieIQ - Financial, Physical and Mental Health",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo 'No build step required'",
+    "cap:sync": "npx cap sync android",
+    "cap:open": "npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor-community/background-geolocation": "^1.2.26",
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capgo/capacitor-pedometer": "^8.0.29"
+  },
+  "capacitor": {
+    "ios": {},
+    "android": {}
+  }
+}
+

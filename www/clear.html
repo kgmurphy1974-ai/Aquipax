@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>Aquipax — Updating...</title>
+<style>
+body{background:#181614;font-family:sans-serif;color:#f0ead8;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:20px}
+.msg{font-size:16px;color:#c9a84c;margin-bottom:8px}
+.sub{font-size:12px;color:#5a5040}
+.spinner{width:32px;height:32px;border:2px solid rgba(201,168,76,0.2);border-top-color:#c9a84c;border-radius:50%;animation:spin 0.8s linear infinite;margin:20px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div>
+  <div class="msg">Updating Aquipax...</div>
+  <div class="sub">Clearing old cache</div>
+  <div class="spinner"></div>
+</div>
+<script>
+async function clearEverything() {
+  // 1. Unregister ALL service workers
+  if ('serviceWorker' in navigator) {
+    const regs = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(regs.map(r => r.unregister()));
+  }
+  
+  // 2. Clear ALL caches
+  if ('caches' in window) {
+    const keys = await caches.keys();
+    await Promise.all(keys.map(k => caches.delete(k)));
+  }
+  
+  // 3. Redirect to app with cache-bust
+  window.location.replace('/app.html?bust=' + Date.now());
+}
+
+clearEverything().catch(() => {
+  window.location.replace('/app.html?bust=' + Date.now());
+});
+</script>
+</body>
+</html>
+<!-- ts:20260412_v6 -->

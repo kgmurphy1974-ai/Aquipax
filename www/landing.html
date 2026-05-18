@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a1628">
+<meta name="description" content="Aquipax tells you exactly what you can safely spend this month — after every bill, renewal, saving and holiday fund is accounted for. No guessing. No overdrafts. Just your number.">
+<title>Aquipax — Know Exactly What You Can Spend</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:#0a1628;font-family:'Jost',sans-serif;color:#e8f0ff;overflow-x:hidden}
+
+/* ── Variables ── */
+:root{
+  --navy:#0a1628;--navy2:#0d1f3c;--border:#1a3a6b;
+  --blue:#1a7fe8;--gold:#c9a84c;--green:#3a9a5a;
+  --text:#e8f0ff;--muted:#7a9cc0;--dim:#3a5a8a;
+}
+
+/* ── Nav ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 32px;display:flex;justify-content:space-between;align-items:center;transition:background 0.3s}
+nav.scrolled{background:rgba(10,22,40,0.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(26,58,107,0.3)}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;letter-spacing:3px;color:#e8f0ff;text-transform:uppercase}
+.nav-by{font-size:9px;letter-spacing:2px;color:var(--blue);font-weight:600;margin-top:2px}
+.nav-cta{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:11px 24px;font-size:12px;letter-spacing:2px;font-family:'Jost',sans-serif;font-weight:600;cursor:pointer;text-transform:uppercase;text-decoration:none;transition:all 0.2s}
+.nav-cta:hover{background:#1565c0;transform:translateY(-1px)}
+
+/* ── Hero ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;position:relative;overflow:hidden}
+
+/* Animated gradient background */
+.hero-bg{position:absolute;inset:0;background:
+  radial-gradient(ellipse 100% 70% at 50% -10%,rgba(26,127,232,0.18) 0%,transparent 60%),
+  radial-gradient(ellipse 60% 40% at 20% 80%,rgba(201,168,76,0.07) 0%,transparent 60%),
+  radial-gradient(ellipse 50% 50% at 80% 90%,rgba(26,127,232,0.06) 0%,transparent 60%);
+  pointer-events:none}
+
+/* Floating orbs */
+.orb{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none;animation:orbFloat ease-in-out infinite}
+.orb1{width:400px;height:400px;background:rgba(26,127,232,0.08);top:-100px;left:-100px;animation-duration:12s;animation-delay:0s}
+.orb2{width:300px;height:300px;background:rgba(201,168,76,0.06);bottom:-50px;right:-50px;animation-duration:15s;animation-delay:-5s}
+@keyframes orbFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.05)}}
+
+/* Phrase cycling */
+.hero-eyebrow{font-size:11px;letter-spacing:4px;color:var(--blue);text-transform:uppercase;font-weight:600;margin-bottom:24px;opacity:0;animation:fadeUp 0.8s ease 0.3s forwards}
+.phrase-wrap{height:clamp(60px,10vw,100px);overflow:hidden;margin-bottom:20px;position:relative}
+.phrase{font-family:'Cormorant Garamond',serif;font-size:clamp(44px,8vw,88px);font-weight:300;font-style:italic;color:#e8f0ff;line-height:1.1;position:absolute;left:0;right:0;opacity:0;transform:translateY(40px);transition:opacity 0.7s ease,transform 0.7s ease}
+.phrase.active{opacity:1;transform:translateY(0)}
+.phrase.exit{opacity:0;transform:translateY(-40px)}
+
+.hero-answer{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,3vw,28px);font-weight:300;color:var(--muted);margin-bottom:40px;opacity:0;animation:fadeUp 0.8s ease 1.5s forwards}
+.hero-answer strong{color:var(--blue);font-weight:400;font-style:italic}
+
+/* The big number reveal */
+.number-reveal{margin-bottom:48px;opacity:0;animation:fadeUp 0.8s ease 1.8s forwards}
+.number-label-top{font-size:10px;letter-spacing:4px;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+.big-number{font-family:'Cormorant Garamond',serif;font-size:clamp(80px,16vw,160px);font-weight:300;color:var(--gold);line-height:1;letter-spacing:-2px;position:relative;display:inline-block}
+.big-number::after{content:'';position:absolute;bottom:-8px;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.number-label-bottom{font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-top:12px}
+
+.hero-cta-group{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:32px;opacity:0;animation:fadeUp 0.8s ease 2.1s forwards}
+.btn-hero{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:18px 40px;font-size:13px;letter-spacing:3px;font-family:'Jost',sans-serif;font-weight:700;cursor:pointer;text-transform:uppercase;text-decoration:none;display:inline-block;transition:all 0.2s;box-shadow:0 8px 32px rgba(26,127,232,0.35)}
+.btn-hero:hover{background:#1565c0;transform:translateY(-2px);box-shadow:0 12px 40px rgba(26,127,232,0.45)}
+.btn-ghost-hero{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:10px;padding:17px 32px;font-size:12px;letter-spacing:2px;font-family:'Jost',sans-serif;font-weight:500;cursor:pointer;text-transform:uppercase;text-decoration:none;display:inline-block;transition:all 0.2s}
+.btn-ghost-hero:hover{border-color:var(--blue);color:#e8f0ff}
+
+.hero-trust{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;opacity:0;animation:fadeUp 0.8s ease 2.4s forwards}
+.trust-item{font-size:11px;color:var(--dim);letter-spacing:1px;display:flex;align-items:center;gap:6px}
+.trust-dot{width:5px;height:5px;border-radius:50%;background:var(--blue)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Scroll indicator ── */
+.scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;opacity:0;animation:fadeUp 0.8s ease 3s forwards}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--blue),transparent)}
+.scroll-text{font-size:9px;letter-spacing:3px;color:var(--dim);text-transform:uppercase}
+
+/* ── Stats band ── */
+.stats-band{background:linear-gradient(135deg,#0d1f3c 0%,#0f2240 100%);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:48px 24px}
+.stats-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0}
+.stat{text-align:center;padding:0 24px;position:relative}
+.stat+.stat::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:1px;background:var(--border)}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:clamp(48px,6vw,72px);font-weight:300;color:var(--blue);line-height:1;margin-bottom:8px}
+.stat-desc{font-size:12px;color:var(--muted);line-height:1.6;max-width:160px;margin:0 auto}
+.stat-source{font-size:10px;color:var(--dim);margin-top:6px;font-style:italic}
+
+/* ── Section base ── */
+.section{padding:100px 24px;max-width:1000px;margin:0 auto}
+.section-full{padding:100px 24px}
+.eyebrow{font-size:10px;letter-spacing:4px;color:var(--blue);text-transform:uppercase;font-weight:600;margin-bottom:16px}
+.section-headline{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,60px);font-weight:300;line-height:1.15;margin-bottom:20px}
+.section-headline em{font-style:italic;color:var(--gold)}
+.section-headline .blue{color:var(--blue)}
+.section-sub{font-size:17px;color:var(--muted);line-height:1.8;max-width:580px}
+
+/* ── Divider ── */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:0 24px}
+
+/* ── Problem section — big quotes ── */
+.problem-quotes{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2px;margin-top:48px}
+.pq{padding:32px;background:var(--navy2);border:1px solid var(--border);transition:all 0.3s;cursor:default}
+.pq:hover{border-color:var(--blue);background:#0f2240;transform:translateY(-3px)}
+.pq-text{font-family:'Cormorant Garamond',serif;font-size:clamp(24px,3vw,32px);font-weight:300;font-style:italic;color:#e8f0ff;line-height:1.35;margin-bottom:12px}
+.pq-line{width:32px;height:2px;background:var(--blue);margin-bottom:12px}
+.pq-context{font-size:11px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;font-weight:600}
+
+/* ── Solution section ── */
+.solution-split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;margin-top:48px}
+@media(max-width:700px){.solution-split{grid-template-columns:1fr}}
+.solution-text p{font-size:17px;color:var(--muted);line-height:1.85;margin-bottom:20px}
+.solution-text p strong{color:#e8f0ff}
+.solution-phone{background:var(--navy2);border:1px solid var(--border);border-radius:24px;padding:28px 24px;box-shadow:0 40px 80px rgba(0,0,0,0.4),0 0 80px rgba(26,127,232,0.06)}
+.phone-greeting{font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.phone-name{font-size:18px;color:#e8f0ff;font-weight:500;margin-bottom:20px}
+.phone-number-label{font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.phone-num{font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:300;color:var(--gold);line-height:1}
+.phone-num-sub{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:20px;margin-top:4px}
+.phone-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(26,58,107,0.5);font-size:13px}
+.phone-row:last-child{border-bottom:none}
+.phone-row-label{color:var(--muted)}
+.phone-row-val{font-weight:600;color:#e8f0ff}
+.phone-row-val.green{color:var(--green)}
+.phone-row-val.gold{color:var(--gold)}
+
+/* ── Features ── */
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1px;margin-top:48px;background:var(--border)}
+.feat{background:var(--navy);padding:36px 32px;transition:background 0.2s}
+.feat:hover{background:var(--navy2)}
+.feat-icon{font-size:36px;margin-bottom:16px}
+.feat-title{font-size:18px;font-weight:600;color:#e8f0ff;margin-bottom:10px}
+.feat-desc{font-size:14px;color:var(--muted);line-height:1.75}
+.feat-tag{display:inline-block;margin-top:14px;padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.feat-tag.free{background:rgba(58,154,90,0.12);color:var(--green);border:1px solid rgba(58,154,90,0.2)}
+.feat-tag.plus{background:rgba(26,127,232,0.12);color:var(--blue);border:1px solid rgba(26,127,232,0.2)}
+
+/* ── Receipt scanner showcase ── */
+.scanner-showcase{background:var(--navy2);border:1px solid var(--border);border-radius:16px;padding:32px;margin-top:48px;overflow:hidden}
+.scanner-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.scanner-title{font-size:16px;font-weight:600;color:#e8f0ff}
+.scanner-badge{background:rgba(58,154,90,0.15);border:1px solid rgba(58,154,90,0.3);border-radius:20px;padding:5px 14px;font-size:11px;color:var(--green);font-weight:600;letter-spacing:1px}
+.scanner-table{width:100%;border-collapse:collapse}
+.scanner-table th{font-size:10px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+.scanner-table td{padding:12px;font-size:14px;border-bottom:1px solid rgba(26,58,107,0.3)}
+.scanner-table tr:last-child td{border-bottom:none}
+.scanner-table .item-name{color:#e8f0ff;font-weight:500}
+.scanner-table .paid{color:var(--muted)}
+.scanner-table .cheapest{color:var(--green);font-weight:700}
+.scanner-table .offer{background:rgba(201,168,76,0.1);color:var(--gold);font-size:11px;padding:3px 8px;border-radius:4px;font-weight:600}
+.scanner-saving{margin-top:16px;background:rgba(58,154,90,0.08);border:1px solid rgba(58,154,90,0.2);border-radius:8px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
+.scanner-saving-label{font-size:13px;color:var(--muted)}
+.scanner-saving-val{font-size:20px;color:var(--green);font-weight:700}
+
+/* ── How it works ── */
+.steps{margin-top:48px;display:flex;flex-direction:column;gap:0}
+.step{display:grid;grid-template-columns:80px 1fr;gap:24px;padding:32px 0;border-bottom:1px solid rgba(26,58,107,0.3)}
+.step:last-child{border-bottom:none}
+.step-num{font-family:'Cormorant Garamond',serif;font-size:64px;font-weight:300;color:rgba(26,127,232,0.25);line-height:1;text-align:center}
+.step-title{font-size:20px;font-weight:600;color:#e8f0ff;margin-bottom:8px}
+.step-desc{font-size:15px;color:var(--muted);line-height:1.75}
+
+/* ── Comparison ── */
+.compare-table{margin-top:48px;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.compare-head{display:grid;grid-template-columns:2fr 1fr 1fr;background:rgba(26,127,232,0.06);padding:14px 20px;border-bottom:1px solid var(--border)}
+.compare-head div{font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;font-weight:600}
+.compare-head div:nth-child(2){color:var(--blue)}
+.compare-row{display:grid;grid-template-columns:2fr 1fr 1fr;padding:14px 20px;border-bottom:1px solid rgba(26,58,107,0.25)}
+.compare-row:last-child{border-bottom:none}
+.compare-row div{font-size:14px;color:var(--muted)}
+.compare-row div:first-child{color:#e8f0ff;font-weight:500}
+.compare-row div:nth-child(2){color:var(--blue);font-weight:600}
+.ck{color:var(--green)}
+.cx{color:var(--dim)}
+
+/* ── Testimonials ── */
+.testimonials{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:48px}
+.testi{background:var(--navy2);border:1px solid var(--border);border-radius:12px;padding:28px;transition:border-color 0.2s}
+.testi:hover{border-color:rgba(26,127,232,0.4)}
+.testi-stars{color:var(--gold);font-size:14px;margin-bottom:12px;letter-spacing:2px}
+.testi-quote{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:300;font-style:italic;color:#e8f0ff;line-height:1.55;margin-bottom:16px}
+.testi-author{display:flex;align-items:center;gap:10px}
+.testi-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--gold));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}
+.testi-name{font-size:13px;color:#e8f0ff;font-weight:600}
+.testi-detail{font-size:11px;color:var(--dim)}
+
+/* ── Pricing ── */
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:48px}
+.price-card{background:var(--navy2);border:1px solid var(--border);border-radius:14px;padding:28px;position:relative;transition:border-color 0.2s,transform 0.2s}
+.price-card:hover{transform:translateY(-3px)}
+.price-card.featured{border-color:var(--blue);background:#0d2040}
+.price-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:10px;letter-spacing:2px;font-weight:700;padding:4px 16px;border-radius:20px;text-transform:uppercase;white-space:nowrap}
+.price-tier{font-size:12px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:8px}
+.price-amount{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;color:#e8f0ff;line-height:1;margin-bottom:4px}
+.price-amount span{font-size:16px;color:var(--muted);font-family:'Jost',sans-serif}
+.price-annual{font-size:12px;color:var(--dim);margin-bottom:20px}
+.price-features{list-style:none;margin-bottom:24px}
+.price-features li{font-size:13px;color:var(--muted);padding:6px 0;border-bottom:1px solid rgba(26,58,107,0.3);display:flex;align-items:center;gap:8px}
+.price-features li:last-child{border-bottom:none}
+.price-features li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0}
+.price-features li.dim::before{content:'—';color:var(--dim)}
+.price-features li.dim{color:var(--dim)}
+.price-btn{width:100%;padding:13px;border:none;border-radius:8px;font-size:12px;letter-spacing:2px;font-family:'Jost',sans-serif;font-weight:700;cursor:pointer;text-transform:uppercase;text-decoration:none;display:block;text-align:center;transition:all 0.2s}
+.price-btn.primary{background:var(--blue);color:#fff}
+.price-btn.primary:hover{background:#1565c0}
+.price-btn.gold-btn{background:var(--gold);color:#0a1628}
+.price-btn.gold-btn:hover{background:#b8962a}
+.price-btn.outline{background:transparent;color:var(--muted);border:1px solid var(--border)}
+.price-btn.outline:hover{border-color:var(--blue);color:#e8f0ff}
+
+/* ── FAQ ── */
+.faq{margin-top:48px;display:flex;flex-direction:column;gap:2px}
+.faq-item{background:var(--navy2);border:1px solid var(--border);border-radius:8px;overflow:hidden;transition:border-color 0.2s}
+.faq-item:hover{border-color:rgba(26,127,232,0.4)}
+.faq-q{padding:18px 20px;font-size:15px;font-weight:500;color:#e8f0ff;cursor:pointer;display:flex;justify-content:space-between;align-items:center;list-style:none}
+.faq-q::after{content:'›';font-size:22px;color:var(--dim);transition:transform 0.2s;flex-shrink:0}
+.faq-item[open] .faq-q::after{transform:rotate(90deg)}
+.faq-a{padding:0 20px 18px;font-size:14px;color:var(--muted);line-height:1.8}
+
+/* ── Final CTA ── */
+.final-cta{background:linear-gradient(135deg,#0d1f3c 0%,#0a1a38 50%,#0d2040 100%);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:100px 24px;text-align:center;position:relative;overflow:hidden}
+.final-cta::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(26,127,232,0.08) 0%,transparent 70%);pointer-events:none}
+.final-headline{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,6vw,72px);font-weight:300;line-height:1.15;margin-bottom:20px;position:relative;z-index:1}
+.final-headline em{font-style:italic;color:var(--gold)}
+.final-sub{font-size:17px;color:var(--muted);margin-bottom:40px;line-height:1.7;position:relative;z-index:1}
+.final-note{font-size:12px;color:var(--dim);margin-top:20px;position:relative;z-index:1}
+
+/* ── Footer ── */
+footer{padding:40px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;border-top:1px solid var(--border);max-width:1200px;margin:0 auto}
+.footer-brand{font-size:11px;color:var(--dim);letter-spacing:2px}
+.footer-links{display:flex;gap:24px;flex-wrap:wrap}
+.footer-links a{font-size:11px;color:var(--dim);text-decoration:none;letter-spacing:1px;transition:color 0.2s}
+.footer-links a:hover{color:var(--muted)}
+
+/* ── Scroll reveal ── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.75s ease,transform 0.75s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-d1{transition-delay:0.1s}.reveal-d2{transition-delay:0.2s}.reveal-d3{transition-delay:0.3s}
+
+/* ── Particles ── */
+.particles{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.particle{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--blue);opacity:0;animation:pFloat linear infinite}
+@keyframes pFloat{0%{opacity:0;transform:translateY(100vh)}10%{opacity:0.5}90%{opacity:0.1}100%{opacity:0;transform:translateY(-20px)}}
+
+/* ── Responsive ── */
+@media(max-width:600px){
+  nav{padding:14px 20px}
+  .hero{padding:90px 20px 60px}
+  .stat+.stat::before{display:none}
+  .compare-head,.compare-row{grid-template-columns:1fr 1fr}
+  .compare-head div:last-child,.compare-row div:last-child{display:none}
+  footer{flex-direction:column;text-align:center}
+  .scanner-table th:last-child,.scanner-table td:last-child{display:none}
+}
+</style>
+<!-- Google Analytics 4 — replace G-3XNKLPXWTP with your Measurement ID from analytics.google.com -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3XNKLPXWTP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-3XNKLPXWTP');
+</script>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav id="nav">
+  <a href="/" class="nav-brand">
+    <div>
+      <div class="nav-name">Aquipax</div>
+      <div class="nav-by">by JeanieIQ</div>
+    </div>
+  </a>
+  <a href="/index.html" class="nav-cta">Start free — 7 days →</a>
+</nav>
+
+<!-- ── Hero ── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="particles" id="particles"></div>
+
+  <div class="hero-eyebrow">The UK's most honest money app</div>
+
+  <!-- Rotating painful phrases -->
+  <div class="phrase-wrap" id="phraseWrap">
+    <div class="phrase active" id="ph0">"Where does my money go?"</div>
+    <div class="phrase" id="ph1">"I earn more but have less."</div>
+    <div class="phrase" id="ph2">"We cannot afford it."</div>
+    <div class="phrase" id="ph3">"Wait 'til payday."</div>
+    <div class="phrase" id="ph4">"We're overdrawn again."</div>
+    <div class="phrase" id="ph5">"It's impossible."</div>
+    <div class="phrase" id="ph6">"What's the point?"</div>
+    <div class="phrase" id="ph7" style="font-style:normal;color:#1a7fe8;font-size:clamp(28px,5vw,56px)">You are not alone. Everyone feels it.</div>
+  </div>
+
+  <p class="hero-answer">Stop asking. Start <strong>knowing.</strong></p>
+
+  <!-- The number reveal -->
+  <div class="number-reveal">
+    <div class="number-label-top">Your safe-to-spend number</div>
+    <div class="big-number" id="heroNum">£847</div>
+    <div class="number-label-bottom">this month — with nothing hiding round the corner</div>
+  </div>
+
+  <div class="hero-cta-group">
+    <a href="/index.html" class="btn-hero">Take back control →</a>
+    <a href="#how" class="btn-ghost-hero">See how it works</a>
+  </div>
+
+  <div class="hero-trust">
+    <span class="trust-item"><span class="trust-dot"></span>No bank login</span>
+    <span class="trust-item"><span class="trust-dot"></span>7-day free trial</span>
+    <span class="trust-item"><span class="trust-dot"></span>Works offline</span>
+    <span class="trust-item"><span class="trust-dot"></span>Built for the UK</span>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-text">Scroll</div>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ── Stats band ── -->
+<div class="stats-band">
+  <div class="stats-inner">
+    <div class="stat reveal">
+      <div class="stat-num">1 in 4</div>
+      <div class="stat-desc">UK adults have no idea what they can safely spend this month</div>
+      <div class="stat-source">Money & Pensions Service</div>
+    </div>
+    <div class="stat reveal reveal-d1">
+      <div class="stat-num">£700</div>
+      <div class="stat-desc">Average household wastes every year on bills they could switch</div>
+      <div class="stat-source">Citizens Advice, 2024</div>
+    </div>
+    <div class="stat reveal reveal-d2">
+      <div class="stat-num">28%</div>
+      <div class="stat-desc">Grocery prices have risen in three years. Most wages haven't</div>
+      <div class="stat-source">ONS, 2024</div>
+    </div>
+    <div class="stat reveal reveal-d3">
+      <div class="stat-num">56%</div>
+      <div class="stat-desc">Of UK adults feel anxious about money at least once a week</div>
+      <div class="stat-source">Mental Health Foundation</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Problem ── -->
+<section class="section">
+  <div class="eyebrow reveal">The problem</div>
+  <h2 class="section-headline reveal">Budgeting apps show you where your money <em>went.</em><br>You need to know what you can spend <span class="blue">right now.</span></h2>
+  <p class="section-sub reveal">They track the past. Aquipax maps the future — every bill, every renewal, every season — so you always know your number before you spend.</p>
+
+  <div class="problem-quotes">
+    <div class="pq reveal">
+      <div class="pq-text">"The MOT, the insurance, Christmas — they all land at once and we're wiped out."</div>
+      <div class="pq-line"></div>
+      <div class="pq-context">Annual costs · Aquipax smooths them monthly</div>
+    </div>
+    <div class="pq reveal reveal-d1">
+      <div class="pq-text">"We booked the holiday then spent three months worrying if we actually could."</div>
+      <div class="pq-line"></div>
+      <div class="pq-context">Holiday planning · Aquipax builds the fund automatically</div>
+    </div>
+    <div class="pq reveal reveal-d2">
+      <div class="pq-text">"I categorised 400 transactions. I still didn't know if I could afford the weekend."</div>
+      <div class="pq-line"></div>
+      <div class="pq-context">Backwards budgeting · Aquipax looks forwards</div>
+    </div>
+    <div class="pq reveal reveal-d3">
+      <div class="pq-text">"We earn decent money. We shouldn't be checking the balance before every shop."</div>
+      <div class="pq-line"></div>
+      <div class="pq-context">The anxiety · Aquipax removes it with one number</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── Solution ── -->
+<section class="section">
+  <div class="eyebrow reveal">The solution</div>
+  <h2 class="section-headline reveal">One number. <em>Everything</em> accounted for.</h2>
+
+  <div class="solution-split">
+    <div class="solution-text reveal">
+      <p>Aquipax maps your complete financial year — every bill, every renewal, every annual cost, every savings goal — and gives you one honest answer: <strong>exactly what you can safely spend this month.</strong></p>
+      <p>Not where your money went. Where it's going. Set up in 5 minutes. No bank login. No Open Banking. Just the numbers you already know.</p>
+      <p>Open Aquipax. See your number. <strong>Carry on with your life.</strong></p>
+      <a href="/index.html" class="btn-hero" style="margin-top:8px;display:inline-block">Get your number →</a>
+    </div>
+    <div class="solution-phone reveal reveal-d1">
+      <div class="phone-greeting">Good morning</div>
+      <div class="phone-name">Shane</div>
+      <div class="phone-number-label">Your number this month</div>
+      <div class="phone-num">£847</div>
+      <div class="phone-num-sub">safe to spend</div>
+      <div class="phone-row"><span class="phone-row-label">Monthly bills</span><span class="phone-row-val">£1,240</span></div>
+      <div class="phone-row"><span class="phone-row-label">Smooth year buffer</span><span class="phone-row-val">£180/mo</span></div>
+      <div class="phone-row"><span class="phone-row-label">Holiday fund</span><span class="phone-row-val gold">£125/mo</span></div>
+      <div class="phone-row"><span class="phone-row-label">Savings</span><span class="phone-row-val green">£200/mo</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── Features ── -->
+<section class="section-full">
+  <div style="max-width:1000px;margin:0 auto">
+    <div class="eyebrow reveal">What it does</div>
+    <h2 class="section-headline reveal">Five things, done <em>properly.</em></h2>
+    <p class="section-sub reveal">No twenty-tab dashboard. No transactions to categorise. Just the tools that actually move the needle.</p>
+  </div>
+
+  <div class="features-grid" style="max-width:1200px;margin:48px auto 0">
+    <div class="feat reveal">
+      <div class="feat-icon">💷</div>
+      <div class="feat-title">Your safe-to-spend number</div>
+      <div class="feat-desc">One honest figure, updated daily. Every bill, renewal, saving and holiday fund accounted for. Nothing hiding round the corner.</div>
+      <span class="feat-tag free">Free</span>
+    </div>
+    <div class="feat reveal reveal-d1">
+      <div class="feat-icon">📷</div>
+      <div class="feat-title">Receipt scanner</div>
+      <div class="feat-desc">Snap a receipt. AI reads every item and compares prices live at Tesco, ASDA, Sainsbury's, Morrisons, Waitrose — with current offers and Clubcard prices.</div>
+      <span class="feat-tag plus">Plus</span>
+    </div>
+    <div class="feat reveal reveal-d2">
+      <div class="feat-icon">⛽</div>
+      <div class="feat-title">Live fuel prices</div>
+      <div class="feat-desc">4,000+ UK stations updated every 30 minutes via CMA open data. The cheapest pump within 5 miles, ranked. Monthly cost calculator included.</div>
+      <span class="feat-tag free">Free</span>
+    </div>
+    <div class="feat reveal">
+      <div class="feat-icon">🍎</div>
+      <div class="feat-title">Basket nutrition</div>
+      <div class="feat-desc">Scan a receipt and see the nutritional breakdown of your grocery basket — calories, protein, Nutri-Score, and ultra-processed item count.</div>
+      <span class="feat-tag plus">Plus</span>
+    </div>
+    <div class="feat reveal reveal-d1">
+      <div class="feat-icon">🤖</div>
+      <div class="feat-title">Ask Jeanie</div>
+      <div class="feat-desc">An AI assistant that knows your actual numbers. "Can I afford a holiday?" "Why is my number low?" Real answers, not generic advice.</div>
+      <span class="feat-tag free">Free</span>
+    </div>
+    <div class="feat reveal reveal-d2">
+      <div class="feat-icon">💳</div>
+      <div class="feat-title">Debt tracker</div>
+      <div class="feat-desc">Track every debt with balance, rate, and minimum payment. See your payoff date and choose between Avalanche (saves most interest) or Snowball (builds momentum).</div>
+      <span class="feat-tag free">Free</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── Receipt scanner showcase ── -->
+<section class="section">
+  <div class="eyebrow reveal">Live supermarket prices</div>
+  <h2 class="section-headline reveal">Scan a receipt. See what you <em>should</em> have paid.</h2>
+  <p class="section-sub reveal">Not estimated prices. Not AI guesses. Live data from the actual supermarket websites — updated today, with current offers.</p>
+
+  <div class="scanner-showcase reveal">
+    <div class="scanner-header">
+      <div class="scanner-title">Tesco Extra · Today · 42 items scanned · Total paid: £34.50</div>
+      <div class="scanner-badge">✓ Live prices · 5 stores checked</div>
+    </div>
+    <table class="scanner-table">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>You paid</th>
+          <th>Cheapest</th>
+          <th>Offer</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="item-name">Warburtons White 800g</td>
+          <td class="paid">£1.30</td>
+          <td class="cheapest">ASDA £1.10</td>
+          <td><span class="offer">Clubcard £1.10</span></td>
+        </tr>
+        <tr>
+          <td class="item-name">Cathedral City 400g</td>
+          <td class="paid">£3.75</td>
+          <td class="cheapest">Morrisons £3.25</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td class="item-name">Persil Liquid 30W</td>
+          <td class="paid">£6.50</td>
+          <td class="cheapest">ASDA £5.50</td>
+          <td><span class="offer">Rollback</span></td>
+        </tr>
+        <tr>
+          <td class="item-name">Innocent Smoothie 750ml</td>
+          <td class="paid">£3.50</td>
+          <td class="cheapest">Sainsbury's £3.00</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="scanner-saving">
+      <div class="scanner-saving-label">You could save by switching stores</div>
+      <div class="scanner-saving-val">£2.40 on this shop</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── How it works ── -->
+<section class="section" id="how">
+  <div class="eyebrow reveal">How it works</div>
+  <h2 class="section-headline reveal">Five minutes to set up. <em>Calm forever after.</em></h2>
+
+  <div class="steps">
+    <div class="step reveal">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">Tell it your shape</div>
+        <div class="step-desc">Your income, the bills you actually pay, the renewals lurking in your year — MOT, insurance, energy, broadband. No bank logins. No Open Banking handshake. Just the numbers you already know. Takes about 5 minutes.</div>
+      </div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">Aquipax does the maths</div>
+        <div class="step-desc">It flattens every annual cost across 12 months, holds back what your savings goals need, builds your holiday fund, and produces one figure: the amount you can spend this month without quietly breaking next March.</div>
+      </div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-title">Spend with certainty</div>
+        <div class="step-desc">Open Aquipax. See your number. Carry on with your life. No anxious sums in the supermarket aisle. No "wait 'til payday." No "we cannot afford it" when you actually can.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── Comparison ── -->
+<section class="section">
+  <div class="eyebrow reveal">How it's different</div>
+  <h2 class="section-headline reveal">Other apps look <em>backwards.</em><br>Aquipax looks <span class="blue">ahead.</span></h2>
+
+  <div class="compare-table reveal">
+    <div class="compare-head">
+      <div>Feature</div>
+      <div>Aquipax</div>
+      <div>Typical app</div>
+    </div>
+    <div class="compare-row"><div>Safe-to-spend number</div><div><span class="ck">✓</span> Headline feature</div><div><span class="cx">—</span> Rarely</div></div>
+    <div class="compare-row"><div>Plans the whole year ahead</div><div><span class="ck">✓</span> Renewals smoothed</div><div><span class="cx">—</span> Month-by-month</div></div>
+    <div class="compare-row"><div>Live UK supermarket prices</div><div><span class="ck">✓</span> 5 stores, real-time</div><div><span class="cx">—</span> No</div></div>
+    <div class="compare-row"><div>Grocery nutrition analysis</div><div><span class="ck">✓</span> Per basket scan</div><div><span class="cx">—</span> No</div></div>
+    <div class="compare-row"><div>Bank login required</div><div><span class="ck">✓</span> Never</div><div><span class="cx">—</span> Usually mandatory</div></div>
+    <div class="compare-row"><div>Works offline</div><div><span class="ck">✓</span> Installs as an app</div><div><span class="cx">—</span> Rarely</div></div>
+    <div class="compare-row"><div>UK-specific (fuel, MOT, council tax)</div><div><span class="ck">✓</span> Built for it</div><div><span class="cx">—</span> US app with £ sign</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── Testimonials ── -->
+<section class="section">
+  <div class="eyebrow reveal">Real people. Real results.</div>
+  <h2 class="section-headline reveal">Built with the <em>first hundred</em> households.</h2>
+
+  <div class="testimonials">
+    <div class="testi reveal">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-quote">"I've tried YNAB, Snoop, Emma. None of them just told me — yes, you can book the holiday. Aquipax does."</div>
+      <div class="testi-author"><div class="testi-avatar">S</div><div><div class="testi-name">Sarah, 34</div><div class="testi-detail">Manchester · Beta user</div></div></div>
+    </div>
+    <div class="testi reveal reveal-d1">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-quote">"The fuel finder alone has paid for it twice over. The receipt scanner is genuinely a bit magic."</div>
+      <div class="testi-author"><div class="testi-avatar">D</div><div><div class="testi-name">Dan, 41</div><div class="testi-detail">Leeds · Beta user</div></div></div>
+    </div>
+    <div class="testi reveal reveal-d2">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-quote">"It's the first money app I've used that doesn't make me feel like I've failed. It just tells me the truth."</div>
+      <div class="testi-author"><div class="testi-avatar">P</div><div><div class="testi-name">Priya, 29</div><div class="testi-detail">London · Beta user</div></div></div>
+    </div>
+    <div class="testi reveal">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-quote">"We stopped arguing about money. Not because we have more — because we finally know what we have."</div>
+      <div class="testi-author"><div class="testi-avatar">M</div><div><div class="testi-name">Mark & Claire, 38</div><div class="testi-detail">Bristol · Beta users</div></div></div>
+    </div>
+    <div class="testi reveal reveal-d1">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-quote">"I earn decent money. I shouldn't have been checking my balance before every shop. Now I don't have to."</div>
+      <div class="testi-author"><div class="testi-avatar">J</div><div><div class="testi-name">James, 45</div><div class="testi-detail">Birmingham · Beta user</div></div></div>
+    </div>
+    <div class="testi reveal reveal-d2">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-quote">"Set it up in 8 minutes on a Sunday. By Monday morning I knew my number. That's it. That's the whole thing."</div>
+      <div class="testi-author"><div class="testi-avatar">K</div><div><div class="testi-name">Karen, 52</div><div class="testi-detail">Edinburgh · Beta user</div></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── Pricing ── -->
+<section class="section">
+  <div class="eyebrow reveal">Pricing</div>
+  <h2 class="section-headline reveal">Start free. <em>Upgrade when you're hooked.</em></h2>
+  <p class="section-sub reveal">7-day free trial on all paid plans. No credit card required to start. Cancel anytime.</p>
+
+  <div class="pricing-grid">
+    <div class="price-card reveal">
+      <div class="price-tier">Free</div>
+      <div class="price-amount">£0<span>/mo</span></div>
+      <div class="price-annual">Free forever</div>
+      <ul class="price-features">
+        <li>Full financial planner</li>
+        <li>Safe-to-spend number</li>
+        <li>Live fuel prices</li>
+        <li>Meal planner</li>
+        <li>Debt tracker</li>
+        <li>Emergency fund tracker</li>
+        <li>Ask Jeanie AI assistant</li>
+        <li class="dim">Receipt scanner</li>
+        <li class="dim">Live supermarket prices</li>
+        <li class="dim">Cloud sync</li>
+      </ul>
+      <a href="/index.html" class="price-btn outline">Get started free</a>
+    </div>
+    <div class="price-card featured reveal reveal-d1">
+      <div class="price-badge">Most popular</div>
+      <div class="price-tier">Plus</div>
+      <div class="price-amount">£4.99<span>/mo</span></div>
+      <div class="price-annual">or £39.99/year — save 30%</div>
+      <ul class="price-features">
+        <li>Everything in Free</li>
+        <li>Unlimited receipt scanning</li>
+        <li>Live supermarket prices</li>
+        <li>Basket nutrition analysis</li>
+        <li>Year-on-year history</li>
+        <li>PDF annual reports</li>
+        <li>Cloud sync across devices</li>
+        <li>Morning briefing notification</li>
+      </ul>
+      <a href="/index.html" class="price-btn primary">Start 7-day free trial</a>
+    </div>
+    <div class="price-card reveal reveal-d2">
+      <div class="price-tier">Family</div>
+      <div class="price-amount">£4.99<span>/mo</span></div>
+      <div class="price-annual">or £39.99/year</div>
+      <ul class="price-features">
+        <li>Everything in Plus</li>
+        <li>Up to 4 household profiles</li>
+        <li>Shared family calendar</li>
+        <li>Family financial notes</li>
+      </ul>
+      <a href="/index.html" class="price-btn gold-btn">Start 7-day free trial</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── FAQ ── -->
+<section class="section">
+  <div class="eyebrow reveal">Questions</div>
+  <h2 class="section-headline reveal">The honest <em>FAQ.</em></h2>
+
+  <div class="faq reveal">
+    <details class="faq-item"><summary class="faq-q">Does it connect to my bank?</summary><div class="faq-a">No — and on purpose. Aquipax doesn't read your transactions. You tell it your bills and income once; it does the maths from there. No Open Banking, no third-party data sharing, no "we couldn't reconnect your account" emails.</div></details>
+    <details class="faq-item"><summary class="faq-q">How is this different from YNAB, Emma, or Snoop?</summary><div class="faq-a">Those tools are powerful but they assume you want to categorise every transaction. Aquipax assumes you don't. It gives you a single forward-looking number — what you can safely spend this month — and gets out of the way.</div></details>
+    <details class="faq-item"><summary class="faq-q">Is it really UK-specific?</summary><div class="faq-a">Built for it. UK fuel prices, UK supermarket comparisons (Tesco, Sainsbury's, ASDA, Morrisons, Waitrose, Aldi, Co-op, Iceland and more), council tax in the calendar, MOT and renewal tracking, sterling everywhere. Not a US app with a £ sign painted on.</div></details>
+    <details class="faq-item"><summary class="faq-q">What does the 7-day free trial include?</summary><div class="faq-a">Full access to everything in your chosen plan — Plus or Family — for 7 days. No credit card required. After 7 days, you'll be asked to subscribe or you'll drop back to the free tier. Your data is always yours.</div></details>
+    <details class="faq-item"><summary class="faq-q">Do I need to download anything?</summary><div class="faq-a">No. Aquipax is a Progressive Web App. Open it in your browser, tap "Add to Home Screen" on iPhone or Android, and it behaves exactly like a native app — with your icon, fullscreen, offline support, and push notifications.</div></details>
+    <details class="faq-item"><summary class="faq-q">Is my financial data safe?</summary><div class="faq-a">Yes. Your data is stored securely in your personal account with row-level security — no one else can access it. Receipt images are processed by AI and never stored. We don't sell data, we don't run ads. The product is the product.</div></details>
+  </div>
+</section>
+
+<!-- ── Final CTA ── -->
+<div class="final-cta">
+  <div class="eyebrow reveal" style="margin-bottom:20px">Start today</div>
+  <h2 class="final-headline reveal">Stop saying <em>"we cannot afford it."</em><br>Start knowing.</h2>
+  <p class="final-sub reveal">Takes 5 minutes to set up. Free to start. No bank login.<br>Just your number — finally.</p>
+  <a href="/index.html" class="btn-hero reveal" style="font-size:14px;padding:20px 48px;letter-spacing:3px">Take back control →</a>
+  <p class="final-note reveal">7-day free trial · Plus from £4.99/mo · Cancel anytime · No credit card required</p>
+</div>
+
+<!-- ── Email capture ── -->
+<section class="section" style="background:rgba(201,168,76,0.04);border-top:1px solid rgba(201,168,76,0.12);border-bottom:1px solid rgba(201,168,76,0.12);padding:60px 24px;">
+  <div style="max-width:520px;margin:0 auto;text-align:center;">
+    <div class="eyebrow reveal" style="color:#c9a84c;">Stay in the loop</div>
+    <h2 class="section-headline reveal" style="font-size:32px;margin-bottom:12px;">Get tips, updates<br>and <em>money-saving ideas.</em></h2>
+    <p class="reveal" style="color:#7a9cc0;font-size:14px;line-height:1.7;margin-bottom:28px;">No spam. No selling your data. Just occasional genuinely useful content about saving money, eating better, and feeling less stressed about both.</p>
+    <div class="reveal" style="display:flex;gap:10px;max-width:420px;margin:0 auto 12px;">
+      <input id="emailCaptureInput" type="email" placeholder="your@email.com" style="flex:1;padding:14px 18px;background:#0d1f3c;border:1px solid #1a3a6b;border-radius:10px;font-size:14px;color:#e8f0ff;font-family:'Jost',sans-serif;outline:none;" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#1a3a6b'" onkeydown="if(event.key==='Enter')submitEmailCapture()">
+      <button onclick="submitEmailCapture()" style="padding:14px 24px;background:linear-gradient(135deg,#c9a84c,#a8863c);border:none;border-radius:10px;font-size:13px;color:#0a1628;cursor:pointer;font-family:'Jost',sans-serif;font-weight:700;letter-spacing:1px;white-space:nowrap;">Notify me</button>
+    </div>
+    <div id="emailCaptureStatus" style="font-size:12px;color:#3a9a5a;min-height:18px;"></div>
+    <p class="reveal" style="font-size:11px;color:#3a5a8a;margin-top:8px;">We store your email securely. Unsubscribe any time. See our <a href="/privacy.html" style="color:#7a9cc0;">privacy policy</a>.</p>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <div class="footer-brand">AQUIPAX &middot; by JeanieIQ &middot; &copy; 2026</div>
+  <div class="footer-links">
+    <a href="/privacy.html">Privacy</a>
+    <a href="/terms.html">Terms</a>
+    <a href="/cookie.html">Cookies</a>
+    <a href="/press.html">Press</a>
+    <a href="mailto:hello@jeanieiq.com">Contact</a>
+    <a href="/app.html">Open app</a>
+  </div>
+</footer>
+<script>
+// ── Email capture ─────────────────────────────────────────────────────────────────────────────────
+async function submitEmailCapture() {
+  const input = document.getElementById('emailCaptureInput');
+  const status = document.getElementById('emailCaptureStatus');
+  const email = input?.value.trim();
+  if (!email || !email.includes('@')) {
+    if (status) status.textContent = 'Please enter a valid email address.';
+    status.style.color = '#c05050';
+    return;
+  }
+  if (status) { status.textContent = 'Saving...'; status.style.color = '#7a9cc0'; }
+  try {
+    const res = await fetch('https://facgysdopixzxviiljhh.supabase.co/rest/v1/email_signups', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhY2d5c2RvcGl4enh2aWlsamhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5Nzc3NDQsImV4cCI6MjA5MTU1Mzc0NH0.MPcxAsfzlM_XkSSnG8hgGiU83wICKi8TERKw-J1KNHo',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhY2d5c2RvcGl4enh2aWlsamhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5Nzc3NDQsImV4cCI6MjA5MTU1Mzc0NH0.MPcxAsfzlM_XkSSnG8hgGiU83wICKi8TERKw-J1KNHo',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ email, source: 'landing_page', signed_up_at: new Date().toISOString() })
+    });
+    if (res.ok || res.status === 201) {
+      if (status) { status.textContent = '✅ You\'re on the list! We\'ll be in touch.'; status.style.color = '#3a9a5a'; }
+      if (input) input.value = '';
+      // GA4 event
+      if (typeof gtag !== 'undefined') gtag('event', 'email_signup', { source: 'landing_page' });
+    } else {
+      const err = await res.json().catch(() => ({}));
+      // Handle duplicate email gracefully
+      if (err.code === '23505') {
+        if (status) { status.textContent = '✅ You\'re already on the list!'; status.style.color = '#3a9a5a'; }
+      } else {
+        if (status) { status.textContent = 'Something went wrong. Please try again.'; status.style.color = '#c05050'; }
+      }
+    }
+  } catch(e) {
+    if (status) { status.textContent = 'Something went wrong. Please try again.'; status.style.color = '#c05050'; }
+  }
+}
+
+// ── Nav scroll effect ─────────────────────────────────────────────────────────────────────────────────
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// ── Rotating phrases ──────────────────────────────────────────────────────────
+const phrases = document.querySelectorAll('.phrase');
+let current = 0;
+const DURATION = 2800;
+const FADE = 700;
+
+function nextPhrase() {
+  phrases[current].classList.remove('active');
+  phrases[current].classList.add('exit');
+  setTimeout(() => {
+    phrases[current].classList.remove('exit');
+    current = (current + 1) % phrases.length;
+    phrases[current].classList.add('active');
+  }, FADE);
+}
+setTimeout(() => { setInterval(nextPhrase, DURATION); }, 2000);
+
+// ── Animated number counter ───────────────────────────────────────────────────
+function countUp(el, target, prefix, duration) {
+  const start = performance.now();
+  function tick(now) {
+    const p = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = prefix + Math.round(target * eased).toLocaleString('en-GB');
+    if (p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+setTimeout(() => {
+  const el = document.getElementById('heroNum');
+  if (el) countUp(el, 847, '£', 1400);
+}, 2200);
+
+// ── Scroll reveal ─────────────────────────────────────────────────────────────
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── Particles ─────────────────────────────────────────────────────────────────
+const container = document.getElementById('particles');
+if (container) {
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (8 + Math.random() * 14) + 's';
+    p.style.animationDelay = (Math.random() * 12) + 's';
+    p.style.width = p.style.height = (1 + Math.random() * 2) + 'px';
+    container.appendChild(p);
+  }
+}
+
+// ── Smooth scroll ─────────────────────────────────────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>

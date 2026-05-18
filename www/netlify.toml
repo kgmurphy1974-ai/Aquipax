@@ -1,0 +1,68 @@
+# Landing page — serves the marketing page at /
+[[redirects]]
+  from = "/"
+  to = "/landing.html"
+  status = 200
+
+# Sign-in page
+[[redirects]]
+  from = "/signin"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/app"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+[[redirects]]
+  from = "/share-target"
+  to = "/share-target.html"
+  status = 200
+
+[[redirects]]
+  from = "/widget-data"
+  to = "/widget-data.html"
+  status = 200
+
+# Digital Asset Links for Google Play TWA (PWA to Android)
+[[redirects]]
+  from = "/.well-known/assetlinks.json"
+  to = "/assetlinks.json"
+  status = 200
+
+[[redirects]]
+  from = "/cookies"
+  to = "/cookie.html"
+  status = 200
+
+[[redirects]]
+  from = "/api/track-referral"
+  to = "/.netlify/functions/track-referral"
+  status = 200
+
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
+
+[[headers]]
+  for = "/app.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
