@@ -16,10 +16,12 @@ workflows:
         script: npm install --legacy-peer-deps @capacitor/ios
       - name: Add iOS platform
         script: npx cap add ios 2>&1 || true
-      - name: Fix deployment targets
+      - name: Fix all deployment targets
         script: |
           python3 << 'PYEOF'
-          import re
+          import re, os, glob
+
+          # Fix Podfile
           f = 'ios/App/Podfile'
           content = open(f).read()
           content = re.sub(r"platform :ios, '[0-9.]+'", "platform :ios, '14.0'", content)
@@ -33,9 +35,23 @@ workflows:
           )
           open(f, 'w').write(content)
           print('Podfile fixed')
+
+          # Fix all podspec files in node_modules/@capacitor
+          for podspec in glob.glob('node_modules/@capacitor/**/*.podspec', recursive=True):
+              content = open(podspec).read()
+              if 'min_ios_version_supported' in content or 'deployment_target' in content.lower():
+                  content = re.sub(r"s\.platform\s*=\s*:ios,\s*'[0-9.]+'", "s.platform = :ios, '14.0'", content)
+                  content = re.sub(r"s\.ios\.deployment_target\s*=\s*'[0-9.]+'", "s.ios.deployment_target = '14.0'", content)
+                  open(podspec, 'w').write(content)
+                  print(f'Fixed podspec: {podspec}')
+
+          # Fix pbxproj
+          for pbx in glob.glob('ios/**/*.pbxproj', recursive=True):
+              content = open(pbx).read()
+              content = re.sub(r'IPHONEOS_DEPLOYMENT_TARGET = [0-9.]+', 'IPHONEOS_DEPLOYMENT_TARGET = 14.0', content)
+              open(pbx, 'w').write(content)
+              print(f'Fixed pbxproj: {pbx}')
           PYEOF
-          find ios/App -name "*.pbxproj" -exec sed -i.bak 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*/IPHONEOS_DEPLOYMENT_TARGET = 14.0/g' {} \;
-          echo "All deployment targets set to 14.0"
       - name: Install CocoaPods
         script: cd ios/App && pod install
       - name: Copy web assets
