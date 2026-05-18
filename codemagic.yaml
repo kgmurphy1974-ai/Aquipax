@@ -18,8 +18,13 @@ workflows:
         script: npx cap add ios || true
       - name: Fix iOS deployment target
         script: |
-          sed -i '' "s/platform :ios, '[0-9.]*'/platform :ios, '14.0'/g" ios/App/Podfile
-          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*/IPHONEOS_DEPLOYMENT_TARGET = 14.0/g' ios/App/App.xcodeproj/project.pbxproj
+          echo "=== Current Podfile ==="
+          cat ios/App/Podfile
+          echo "=== Fixing deployment target ==="
+          cd ios/App
+          ruby -i -e "puts STDIN.read.gsub(/platform :ios, '[0-9.]+'/, \"platform :ios, '14.0'\")" Podfile
+          echo "=== Updated Podfile ==="
+          cat Podfile
       - name: Install CocoaPods
         script: cd ios/App && pod install
       - name: Copy web assets
