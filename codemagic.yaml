@@ -12,18 +12,18 @@ workflows:
     scripts:
       - name: Install dependencies
         script: npm install --legacy-peer-deps
+      - name: Install Capacitor iOS
+        script: npm install --legacy-peer-deps @capacitor/ios
       - name: Add iOS platform
+        script: npx cap add ios || true
+      - name: Fix iOS deployment target
         script: |
-          npm install --legacy-peer-deps @capacitor/ios
-          npx cap add ios || true
-          npx cap sync ios --no-deps
-      - name: Set iOS deployment target
-        script: |
-          cd ios/App
-          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*/IPHONEOS_DEPLOYMENT_TARGET = 14.0/g' App.xcodeproj/project.pbxproj
-          sed -i '' "s/platform :ios, '[0-9.]*'/platform :ios, '14.0'/g" Podfile
+          sed -i '' "s/platform :ios, '[0-9.]*'/platform :ios, '14.0'/g" ios/App/Podfile
+          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*/IPHONEOS_DEPLOYMENT_TARGET = 14.0/g' ios/App/App.xcodeproj/project.pbxproj
       - name: Install CocoaPods
         script: cd ios/App && pod install
+      - name: Copy web assets
+        script: npx cap copy ios
       - name: Build iOS IPA (unsigned)
         script: |
           xcode-project build-ipa \
