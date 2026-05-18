@@ -16,20 +16,24 @@ workflows:
         script: npm install --legacy-peer-deps @capacitor/ios
       - name: Add iOS platform
         script: npx cap add ios || true
-      - name: Fix Podfile deployment target
+      - name: Fix deployment targets
         script: |
-          PODFILE="ios/App/Podfile"
-          echo "Before fix:"
-          cat "$PODFILE"
           python3 -c "
-          import re, sys
-          content = open('$PODFILE').read()
+          import re
+          f = 'ios/App/Podfile'
+          content = open(f).read()
           content = re.sub(r\"platform :ios, '[0-9.]+'\", \"platform :ios, '14.0'\", content)
-          open('$PODFILE', 'w').write(content)
-          print('Done')
+          open(f, 'w').write(content)
+          print('Podfile fixed')
           "
-          echo "After fix:"
-          cat "$PODFILE"
+          find ios/App -name "*.pbxproj" -exec python3 -c "
+          import re, sys
+          f = sys.argv[1]
+          content = open(f).read()
+          content = re.sub(r'IPHONEOS_DEPLOYMENT_TARGET = [0-9.]+', 'IPHONEOS_DEPLOYMENT_TARGET = 14.0', content)
+          open(f, 'w').write(content)
+          print('pbxproj fixed:', f)
+          " {} \;
       - name: Install CocoaPods
         script: cd ios/App && pod install
       - name: Copy web assets
