@@ -11,7 +11,7 @@ workflows:
       cocoapods: default
     scripts:
       - name: Install dependencies
-        script: npm install
+        script: npm install --legacy-peer-deps
       - name: Add iOS platform
         script: |
           npx cap add ios || true
