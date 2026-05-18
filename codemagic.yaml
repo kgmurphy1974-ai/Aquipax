@@ -19,6 +19,8 @@ workflows:
       - name: Overwrite Podfile with correct deployment target
         script: |
           cat > ios/App/Podfile << 'EOF'
+          require_relative '../../node_modules/@capacitor/ios/scripts/pods_helpers'
+
           platform :ios, '14.0'
           use_frameworks!
 
