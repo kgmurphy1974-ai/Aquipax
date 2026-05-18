@@ -16,15 +16,16 @@ workflows:
         script: npm install --legacy-peer-deps @capacitor/ios
       - name: Add iOS platform
         script: npx cap add ios || true
-      - name: Fix iOS deployment target
+      - name: Overwrite Podfile with correct deployment target
         script: |
-          echo "=== Current Podfile ==="
-          cat ios/App/Podfile
-          echo "=== Fixing deployment target ==="
-          cd ios/App
-          ruby -i -e "puts STDIN.read.gsub(/platform :ios, '[0-9.]+'/, \"platform :ios, '14.0'\")" Podfile
-          echo "=== Updated Podfile ==="
-          cat Podfile
+          cat > ios/App/Podfile << 'EOF'
+          platform :ios, '14.0'
+          use_frameworks!
+
+          target 'App' do
+            capacitor_pods
+          end
+          EOF
       - name: Install CocoaPods
         script: cd ios/App && pod install
       - name: Copy web assets
