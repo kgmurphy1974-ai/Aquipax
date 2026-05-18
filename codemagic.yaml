@@ -14,22 +14,28 @@ workflows:
         script: npm install --legacy-peer-deps
       - name: Install Capacitor iOS
         script: npm install --legacy-peer-deps @capacitor/ios
-      - name: Add iOS platform (ignore pod install failure)
-        script: |
-          npx cap add ios 2>&1 || true
-          ls -la ios/App/ || echo "ios/App not found"
-          ls -la ios/App/Podfile || echo "Podfile not found"
+      - name: Add iOS platform
+        script: npx cap add ios 2>&1 || true
       - name: Fix deployment targets
         script: |
-          if [ -f "ios/App/Podfile" ]; then
-            sed -i.bak "s/platform :ios, '[0-9.]*'/platform :ios, '14.0'/g" ios/App/Podfile
-            find ios/App -name "*.pbxproj" -exec sed -i.bak 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*/IPHONEOS_DEPLOYMENT_TARGET = 14.0/g' {} \;
-            echo "Fixed. Podfile now:"
-            cat ios/App/Podfile
-          else
-            echo "ERROR: ios/App/Podfile not found"
-            find . -name "Podfile" 2>/dev/null
-          fi
+          python3 << 'PYEOF'
+          import re
+          f = 'ios/App/Podfile'
+          content = open(f).read()
+          content = re.sub(r"platform :ios, '[0-9.]+'", "platform :ios, '14.0'", content)
+          content = content.replace(
+              'assertDeploymentTarget(installer)',
+              """installer.pods_project.targets.each do |target|
+            target.build_configurations.each do |config|
+              config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
+            end
+          end"""
+          )
+          open(f, 'w').write(content)
+          print('Podfile fixed')
+          PYEOF
+          find ios/App -name "*.pbxproj" -exec sed -i.bak 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*/IPHONEOS_DEPLOYMENT_TARGET = 14.0/g' {} \;
+          echo "All deployment targets set to 14.0"
       - name: Install CocoaPods
         script: cd ios/App && pod install
       - name: Copy web assets
