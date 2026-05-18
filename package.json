@@ -12,12 +12,10 @@
     "@capacitor-community/background-geolocation": "^1.2.26",
     "@capacitor/android": "^6.0.0",
     "@capacitor/cli": "^6.0.0",
-    "@capacitor/core": "^6.0.0",
-    "@capgo/capacitor-pedometer": "^8.0.29"
+    "@capacitor/core": "^6.0.0"
   },
   "capacitor": {
     "ios": {},
     "android": {}
   }
 }
-
