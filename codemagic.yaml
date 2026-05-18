@@ -14,26 +14,22 @@ workflows:
         script: npm install --legacy-peer-deps
       - name: Install Capacitor iOS
         script: npm install --legacy-peer-deps @capacitor/ios
-      - name: Add iOS platform
-        script: npx cap add ios || true
+      - name: Add iOS platform (ignore pod install failure)
+        script: |
+          npx cap add ios 2>&1 || true
+          ls -la ios/App/ || echo "ios/App not found"
+          ls -la ios/App/Podfile || echo "Podfile not found"
       - name: Fix deployment targets
         script: |
-          python3 -c "
-          import re
-          f = 'ios/App/Podfile'
-          content = open(f).read()
-          content = re.sub(r\"platform :ios, '[0-9.]+'\", \"platform :ios, '14.0'\", content)
-          open(f, 'w').write(content)
-          print('Podfile fixed')
-          "
-          find ios/App -name "*.pbxproj" -exec python3 -c "
-          import re, sys
-          f = sys.argv[1]
-          content = open(f).read()
-          content = re.sub(r'IPHONEOS_DEPLOYMENT_TARGET = [0-9.]+', 'IPHONEOS_DEPLOYMENT_TARGET = 14.0', content)
-          open(f, 'w').write(content)
-          print('pbxproj fixed:', f)
-          " {} \;
+          if [ -f "ios/App/Podfile" ]; then
+            sed -i.bak "s/platform :ios, '[0-9.]*'/platform :ios, '14.0'/g" ios/App/Podfile
+            find ios/App -name "*.pbxproj" -exec sed -i.bak 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*/IPHONEOS_DEPLOYMENT_TARGET = 14.0/g' {} \;
+            echo "Fixed. Podfile now:"
+            cat ios/App/Podfile
+          else
+            echo "ERROR: ios/App/Podfile not found"
+            find . -name "Podfile" 2>/dev/null
+          fi
       - name: Install CocoaPods
         script: cd ios/App && pod install
       - name: Copy web assets
