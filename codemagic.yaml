@@ -9,6 +9,7 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.jeanieiq.aquipax
+        create_certificate: true
       node: v18.17.0
       xcode: latest
       cocoapods: default
