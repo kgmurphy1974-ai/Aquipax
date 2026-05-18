@@ -6,6 +6,9 @@ workflows:
     integrations:
       app_store_connect: JeanieIQ
     environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.jeanieiq.aquipax
       node: v18.17.0
       xcode: latest
       cocoapods: default
@@ -33,35 +36,28 @@ workflows:
           end"""
           )
           open(f, 'w').write(content)
-          print('Podfile fixed')
 
           for pbx in glob.glob('ios/**/*.pbxproj', recursive=True):
               content = open(pbx).read()
               content = re.sub(r'IPHONEOS_DEPLOYMENT_TARGET = [0-9.]+', 'IPHONEOS_DEPLOYMENT_TARGET = 14.0', content)
               open(pbx, 'w').write(content)
-              print(f'Fixed: {pbx}')
           PYEOF
       - name: Install CocoaPods
         script: cd ios/App && pod install
+      - name: Set up code signing
+        script: xcode-project use-profiles
       - name: Copy web assets
         script: npx cap copy ios
       - name: Build iOS IPA
         script: |
-          cat > /Users/builder/export_options.plist << 'EOF'
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key>
-            <string>development</string>
-            <key>compileBitcode</key>
-            <false/>
-          </dict>
-          </plist>
-          EOF
           xcode-project build-ipa \
             --workspace "ios/App/App.xcworkspace" \
             --scheme "App"
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: false
