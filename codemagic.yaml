@@ -14,7 +14,7 @@ workflows:
         script: npm install --legacy-peer-deps
       - name: Add iOS platform
         script: |
-        npm install @capacitor/ios --legacy-peer-deps
+          npm install --legacy-peer-deps @capacitor/ios
           npx cap add ios || true
           npx cap sync ios
       - name: Install CocoaPods
