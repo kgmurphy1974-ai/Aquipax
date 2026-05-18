@@ -16,18 +16,20 @@ workflows:
         script: npm install --legacy-peer-deps @capacitor/ios
       - name: Add iOS platform
         script: npx cap add ios || true
-      - name: Overwrite Podfile with correct deployment target
+      - name: Fix Podfile deployment target
         script: |
-          cat > ios/App/Podfile << 'EOF'
-          require_relative '../../node_modules/@capacitor/ios/scripts/pods_helpers'
-
-          platform :ios, '14.0'
-          use_frameworks!
-
-          target 'App' do
-            capacitor_pods
-          end
-          EOF
+          PODFILE="ios/App/Podfile"
+          echo "Before fix:"
+          cat "$PODFILE"
+          python3 -c "
+          import re, sys
+          content = open('$PODFILE').read()
+          content = re.sub(r\"platform :ios, '[0-9.]+'\", \"platform :ios, '14.0'\", content)
+          open('$PODFILE', 'w').write(content)
+          print('Done')
+          "
+          echo "After fix:"
+          cat "$PODFILE"
       - name: Install CocoaPods
         script: cd ios/App && pod install
       - name: Copy web assets
