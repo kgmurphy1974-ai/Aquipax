@@ -42,14 +42,12 @@ workflows:
               content = re.sub(r'IPHONEOS_DEPLOYMENT_TARGET = [0-9.]+', 'IPHONEOS_DEPLOYMENT_TARGET = 14.0', content)
               open(pbx, 'w').write(content)
 
-          # Replace app icon
           icon_src = 'assets/icon.png'
           iconset = 'ios/App/App/Assets.xcassets/AppIcon.appiconset'
           if os.path.exists(iconset) and os.path.exists(icon_src):
               for f in glob.glob(f'{iconset}/*.png'):
                   os.remove(f)
               shutil.copy(icon_src, f'{iconset}/Icon-1024.png')
-              contents = open(f'{iconset}/Contents.json').read()
               print('Icon replaced successfully')
           else:
               print(f'Iconset path: {iconset} exists: {os.path.exists(iconset)}')
@@ -62,6 +60,9 @@ workflows:
         script: npx cap copy ios
       - name: Build iOS IPA
         script: |
+          cd ios/App
+          agvtool new-version -all 2
+          cd ../..
           xcode-project build-ipa \
             --workspace "ios/App/App.xcworkspace" \
             --scheme "App"
