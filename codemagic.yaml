@@ -19,10 +19,10 @@ workflows:
         script: npm install @capacitor/ios@6 --legacy-peer-deps
       - name: Add iOS platform
         script: npx cap add ios 2>&1 || true
-      - name: Fix all deployment targets
+      - name: Fix deployment targets and replace icon
         script: |
           python3 << 'PYEOF'
-          import re, glob
+          import re, glob, shutil, os
 
           f = 'ios/App/Podfile'
           content = open(f).read()
@@ -41,6 +41,18 @@ workflows:
               content = open(pbx).read()
               content = re.sub(r'IPHONEOS_DEPLOYMENT_TARGET = [0-9.]+', 'IPHONEOS_DEPLOYMENT_TARGET = 14.0', content)
               open(pbx, 'w').write(content)
+
+          # Replace app icon
+          icon_src = 'assets/icon.png'
+          iconset = 'ios/App/App/Assets.xcassets/AppIcon.appiconset'
+          if os.path.exists(iconset) and os.path.exists(icon_src):
+              for f in glob.glob(f'{iconset}/*.png'):
+                  os.remove(f)
+              shutil.copy(icon_src, f'{iconset}/Icon-1024.png')
+              contents = open(f'{iconset}/Contents.json').read()
+              print('Icon replaced successfully')
+          else:
+              print(f'Iconset path: {iconset} exists: {os.path.exists(iconset)}')
           PYEOF
       - name: Install CocoaPods
         script: cd ios/App && pod install
