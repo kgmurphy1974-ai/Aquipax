@@ -19,13 +19,14 @@ workflows:
         script: npm install @capacitor/ios@6 --legacy-peer-deps
       - name: Add iOS platform
         script: npx cap add ios 2>&1 || true
-      - name: Fix deployment targets and generate icons
+      - name: Fix deployment targets, icons and Info.plist
         script: |
           pip3 install pillow --quiet
           python3 << 'PYEOF'
           import re, glob, os, json
           from PIL import Image
 
+          # Fix Podfile
           f = 'ios/App/Podfile'
           content = open(f).read()
           content = re.sub(r"platform :ios, '[0-9.]+'", "platform :ios, '14.0'", content)
@@ -44,9 +45,9 @@ workflows:
               content = re.sub(r'IPHONEOS_DEPLOYMENT_TARGET = [0-9.]+', 'IPHONEOS_DEPLOYMENT_TARGET = 14.0', content)
               open(pbx, 'w').write(content)
 
+          # Generate all required iOS icon sizes
           icon_src = 'assets/icon.png'
           iconset = 'ios/App/App/Assets.xcassets/AppIcon.appiconset'
-
           if os.path.exists(icon_src) and os.path.exists(iconset):
               src = Image.open(icon_src).convert('RGBA')
               sizes = [
@@ -88,8 +89,25 @@ workflows:
               }
               json.dump(contents, open(os.path.join(iconset, 'Contents.json'), 'w'), indent=2)
               print('All icons generated successfully')
-          else:
-              print(f'Icon src exists: {os.path.exists(icon_src)}, Iconset exists: {os.path.exists(iconset)}')
+
+          # Add required privacy strings to Info.plist
+          plist_path = 'ios/App/App/Info.plist'
+          if os.path.exists(plist_path):
+              content = open(plist_path).read()
+              entries = {
+                  'NSLocationAlwaysAndWhenInUseUsageDescription': 'Aquipax uses your location to track your GPS routes and activities.',
+                  'NSLocationWhenInUseUsageDescription': 'Aquipax uses your location to track your GPS routes and activities.',
+                  'NSLocationAlwaysUsageDescription': 'Aquipax uses your location to track your GPS routes and activities.',
+                  'NSMotionUsageDescription': 'Aquipax uses motion data to count your steps and track physical activity.',
+                  'NSCameraUsageDescription': 'Aquipax uses the camera to scan receipts.',
+                  'NSPhotoLibraryUsageDescription': 'Aquipax accesses your photos to upload receipts and profile images.',
+              }
+              for key, value in entries.items():
+                  if key not in content:
+                      insert = f'\t<key>{key}</key>\n\t<string>{value}</string>\n</dict>'
+                      content = content.replace('</dict>', insert, 1)
+              open(plist_path, 'w').write(content)
+              print('Info.plist updated with privacy strings')
           PYEOF
       - name: Install CocoaPods
         script: cd ios/App && pod install
@@ -100,7 +118,7 @@ workflows:
       - name: Build iOS IPA
         script: |
           cd ios/App
-          agvtool new-version -all 3
+          agvtool new-version -all 4
           cd ../..
           xcode-project build-ipa \
             --workspace "ios/App/App.xcworkspace" \
