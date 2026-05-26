@@ -429,7 +429,7 @@ function dismissSplash(){
 
 <!-- ── Cookie consent banner ── -->
 <div id="cookieBanner" class="hidden">
-  <div class="cookie-text">We use essential cookies to keep you signed in and run the app. No tracking, no ads. <a href="/privacy.html" target="_blank">Privacy policy</a></div>
+  <div class="cookie-text">We use essential cookies to keep you signed in and run the app. No tracking, no ads. <a href='/privacy' target='_blank'>Privacy policy</a></div>
   <button class="cookie-decline" onclick="dismissCookies(false)">Essential only</button>
   <button class="cookie-accept" onclick="dismissCookies(true)">Got it</button>
 </div>
@@ -691,10 +691,10 @@ function dismissSplash(){
 const SUPABASE_URL      = 'https://facgysdopixzxviiljhh.supabase.co';
 const VAPID_PUBLIC_KEY  = 'BJ3xeEK1oA0QfVuSgBnVy0APN_qF7hfBQBi21ycbSiXWW45Q6bUbO7R5HGbG_i5jBRm78nmSCvakPbYRf7E56U4';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhY2d5c2RvcGl4enh2aWlsamhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5Nzc3NDQsImV4cCI6MjA5MTU1Mzc0NH0.MPcxAsfzlM_XkSSnG8hgGiU83wICKi8TERKw-J1KNHo';
-const STRIPE_PRICE_MONTHLY = 'price_monthly_placeholder'; // replace with real Stripe price ID
-const STRIPE_PRICE_YEARLY  = 'price_yearly_placeholder';  // replace with real Stripe price ID
-const STRIPE_PRICE_FAMILY_MONTHLY = 'price_family_monthly_placeholder';
-const STRIPE_PRICE_FAMILY_YEARLY  = 'price_family_yearly_placeholder';
+const STRIPE_PRICE_MONTHLY = 'price_1TX1kZFHBCGUxpG2PB3KrvhC'; // replace with real Stripe price ID
+const STRIPE_PRICE_YEARLY  = 'price_1TX1jPFHBCGUxpG2dHsA0Hqm';  // replace with real Stripe price ID
+const STRIPE_PRICE_FAMILY_MONTHLY = 'price_1TX1iHFHBCGUxpG2XZoUUMjX';
+const STRIPE_PRICE_FAMILY_YEARLY  = 'price_1TX1gvFHBCGUxpG2wvsANk1X';
 const CONTACT_EMAIL = 'hello@jeanieiq.com';
 // ─────────────────────────────────────────────────────────────────────────
 
@@ -1236,7 +1236,7 @@ frontdoor(){
     <div class="upgrade-badge">Plus &amp; Family plans</div>
     <div style="font-size:18px;color:#e8f0ff;font-weight:500;margin-bottom:6px">Unlock the full picture</div>
     <div style="font-size:13px;color:#7a9cc0;line-height:1.6;margin-bottom:14px">Receipt scanning · Live prices · Nutrition · Year history · Cloud sync</div>
-    <div style="font-size:22px;color:#1a7fe8;font-weight:600">From £4.99<span style="font-size:13px;color:#7a9cc0;font-weight:400">/month</span></div>
+    <div style="font-size:22px;color:#1a7fe8;font-weight:600">From £5.99<span style="font-size:13px;color:#7a9cc0;font-weight:400">/month</span></div>
   </div>`:''}
 </div>`;},
 
@@ -2332,7 +2332,7 @@ ${!state.isPremium?`<div class="upgrade-card" style="margin-top:16px" onclick="g
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px;text-align:left">
 ${["📷 Receipt scanner","🛒 Live supermarket prices","📊 Year history","📄 PDF reports","🍎 Nutrition insights","☁️ Cloud sync"].map(f=>`<div style="font-size:12px;color:#7a9cc0">${f}</div>`).join('')}
 </div>
-<div style="font-size:20px;color:#1a7fe8;font-weight:600">From £4.99<span style="font-size:12px;color:#7a9cc0;font-weight:400">/month</span></div>
+<div style="font-size:20px;color:#1a7fe8;font-weight:600">From £5.99<span style="font-size:12px;color:#7a9cc0;font-weight:400">/month</span></div>
 </div>`:''}
 
 <button class="ghost" onclick="go('setup')" style="margin-top:8px">📋 View & edit my setup</button>
@@ -2480,11 +2480,74 @@ upgrade(){
   const from=state._upgradeFrom||'';
   return`${logoWithHelp('upgrade')}
 <h2>Unlock the full picture</h2>
-<p class="sub">7-day free trial on all plans. No credit card required. Cancel anytime.</p>
+<p class="sub">Everything you need to take control of your finances, health and wellbeing.</p>
 
-<div id="stripe-table-container" style="margin:16px -4px"></div>
+<!-- Pricing cards -->
+<div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px">
 
-<div style="text-align:center;margin:14px 0;font-size:11px;color:#3a5a8a;line-height:1.6">7-day free trial · Cancel anytime · No commitment</div>
+  <!-- Plus Monthly -->
+  <div style="background:#0d1f3c;border:2px solid #1a7fe8;border-radius:16px;padding:20px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+      <div>
+        <div style="font-size:11px;letter-spacing:2px;color:#1a7fe8;text-transform:uppercase;font-weight:700;margin-bottom:4px">Aquipax Plus</div>
+        <div style="font-size:28px;color:#e8f0ff;font-weight:300;font-family:'Cormorant Garamond',serif">£5.99<span style="font-size:14px;color:#7a9cc0;font-weight:400">/month</span></div>
+        <div style="font-size:11px;color:#3a9a5a;margin-top:2px">or £44.99/year — save 37%</div>
+      </div>
+      <div style="background:rgba(26,127,232,0.15);border:1px solid rgba(26,127,232,0.3);border-radius:8px;padding:4px 10px;font-size:10px;color:#1a7fe8;font-weight:600"></div>
+    </div>
+    <div style="font-size:12px;color:#7a9cc0;line-height:1.8;margin-bottom:14px">
+      ✅ Meal planner (AI-generated, personalised)<br>
+      ✅ Receipt scanner & basket comparison<br>
+      ✅ GPS activity tracker<br>
+      ✅ Bank statement AI analysis<br>
+      ✅ Spending patterns & trends<br>
+      ✅ Ask Jeanie AI assistant<br>
+      ✅ Year history & annual review<br>
+      ✅ Everything in Free
+    </div>
+    <button onclick="startCheckout('plus_monthly')" style="width:100%;padding:14px;background:#1a7fe8;border:none;border-radius:10px;font-size:13px;color:#fff;cursor:pointer;font-family:'Jost',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase">Subscribe now →</button>
+    <button onclick="startCheckout('plus_annual')" style="width:100%;padding:10px;background:transparent;border:1px solid rgba(58,154,90,0.4);border-radius:10px;font-size:11px;color:#3a9a5a;cursor:pointer;font-family:'Jost',sans-serif;font-weight:600;margin-top:6px">Pay annually — £44.99/year (save 37%)</button>
+  </div>
+
+  <!-- Family -->
+  <div style="background:#0d1f3c;border:2px solid #c9a84c;border-radius:16px;padding:20px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+      <div>
+        <div style="font-size:11px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;font-weight:700;margin-bottom:4px">Aquipax Family</div>
+        <div style="font-size:28px;color:#e8f0ff;font-weight:300;font-family:'Cormorant Garamond',serif">£9.99<span style="font-size:14px;color:#7a9cc0;font-weight:400">/month</span></div>
+        <div style="font-size:11px;color:#3a9a5a;margin-top:2px">or £74.99/year — save 36%</div>
+      </div>
+      <div style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);border-radius:8px;padding:4px 10px;font-size:10px;color:#c9a84c;font-weight:600">Up to 4 members</div>
+    </div>
+    <div style="font-size:12px;color:#7a9cc0;line-height:1.8;margin-bottom:14px">
+      ✅ Everything in Plus<br>
+      ✅ Shared shopping list (real-time sync)<br>
+      ✅ Family calendar & task list<br>
+      ✅ Assign tasks to family members<br>
+      ✅ Family planner with push notifications<br>
+      ✅ Household finance sharing (owner controls access)
+    </div>
+    <button onclick="startCheckout('family_monthly')" style="width:100%;padding:14px;background:#c9a84c;border:none;border-radius:10px;font-size:13px;color:#0a1628;cursor:pointer;font-family:'Jost',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase">Subscribe now →</button>
+    <button onclick="startCheckout('family_annual')" style="width:100%;padding:10px;background:transparent;border:1px solid rgba(58,154,90,0.4);border-radius:10px;font-size:11px;color:#3a9a5a;cursor:pointer;font-family:'Jost',sans-serif;font-weight:600;margin-top:6px">Pay annually — £74.99/year (save 36%)</button>
+  </div>
+
+  <!-- Free -->
+  <div style="background:#0d1f3c;border:1px solid #1a3a6b;border-radius:16px;padding:16px">
+    <div style="font-size:11px;letter-spacing:2px;color:#7a9cc0;text-transform:uppercase;font-weight:700;margin-bottom:8px">Free — always</div>
+    <div style="font-size:12px;color:#3a5a8a;line-height:1.8">
+      ✅ Safe-to-spend number<br>
+      ✅ Bills, income & annual costs<br>
+      ✅ Financial calendar & renewals<br>
+      ✅ Live fuel prices<br>
+      ✅ Switch & Save directory<br>
+      ✅ Steps, sleep & mood tracking<br>
+      ✅ Health goals & streaks<br>
+      ✅ Shopping list
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;margin:14px 0;font-size:11px;color:#3a5a8a;line-height:1.6">Cancel anytime · No commitment · Refer 3 friends → earn 3 months free</div>
 <button class="ghost" onclick="goBack()">&larr; Not now</button>
 <div class="footer">Aquipax &middot; by JeanieIQ</div>`;},
 
@@ -3287,6 +3350,7 @@ water_log(){
 <div class="footer">Aquipax &middot; by JeanieIQ</div>`;},
 
 meals(){
+  if(!state.isPremium)return screens.upgrade.call(this);
   const fp=state.foodPreferences||{};
   const servings=fp.servings||2;
   const aiPlan=state._aiMealPlan||null;
@@ -4995,7 +5059,7 @@ mental_health_support(){
 <div style="margin-bottom:16px">
   <div style="font-size:11px;letter-spacing:2px;color:#1a7fe8;text-transform:uppercase;margin-bottom:10px;font-weight:600">🎙️ Relaxation & mindfulness apps</div>
   ${[
-    {name:'Calm',desc:'Sleep stories, meditation & relaxation music',saving:'7-day free trial',url:'https://www.calm.com/',em:'🌙',colour:'#1a7fe8'},
+    {name:'Calm',desc:'Sleep stories, meditation & relaxation music',saving:'',url:'https://www.calm.com/',em:'🌙',colour:'#1a7fe8'},
     {name:'Headspace',desc:'Guided meditation, sleep & focus',saving:'Free trial available',url:'https://www.headspace.com/',em:'🧠',colour:'#c9a84c'},
     {name:'Insight Timer',desc:'Free meditation app · 100,000+ guided sessions',saving:'Free to use',url:'https://insighttimer.com/',em:'⏰',colour:'#3a9a5a'},
     {name:'Sleepiest',desc:'Sleep stories & sounds · Helps you drift off',saving:'Free trial',url:'https://sleepiest.com/',em:'💤',colour:'#a050c0'},
@@ -5058,7 +5122,7 @@ switch_save(){
     ]},
     {id:'mind',label:'Mental health & therapy',icon:'🧠',desc:'Online therapy, counselling & mindfulness',partners:[
       {name:'BetterHelp',desc:'UK\'s largest online therapy platform',saving:'First week free',url:'https://www.betterhelp.com/',colour:'#3a9a5a'},
-      {name:'Calm',desc:'Sleep, meditation & relaxation app',saving:'7-day free trial',url:'https://www.calm.com/',colour:'#1a7fe8'},
+      {name:'Calm',desc:'Sleep, meditation & relaxation app',saving:'',url:'https://www.calm.com/',colour:'#1a7fe8'},
       {name:'Headspace',desc:'Guided meditation & mindfulness',saving:'Free trial available',url:'https://www.headspace.com/',colour:'#c9a84c'},
     ]},
     {id:'sleep',label:'Sleep',icon:'💤',desc:'Mattresses, pillows & sleep tracking',partners:[
@@ -5073,7 +5137,7 @@ switch_save(){
       {name:'WeightWorld',desc:'UK\'s leading weight & wellness store',saving:'10% commission',url:aw(22446,'https://www.weightworld.uk/'),colour:'#e87a1a',awin:true},
       {name:'iHerb',desc:'50,000+ vitamins, supplements & health products',saving:'Up to 25% off',url:aw(76738,'https://uk.iherb.com/'),colour:'#3a9a5a',awin:true},
       {name:'Best Gym Equipment',desc:'UK\'s largest fitness equipment retailer',saving:'5–10% commission',url:aw(6983,'https://www.bestgymequipment.co.uk/'),colour:'#1a7fe8',awin:true},
-      {name:'Nutracheck',desc:'UK calorie counter & food diary app',saving:'7-day free trial',url:'https://www.nutracheck.co.uk/',colour:'#c9a84c'},
+      {name:'Nutracheck',desc:'UK calorie counter & food diary app',saving:'',url:'https://www.nutracheck.co.uk/',colour:'#c9a84c'},
     ]},
     {id:'gym',label:'Gym & classes',icon:'🏋️',desc:'Gym memberships, passes & fitness classes',partners:[
       {name:'Hussle',desc:'Access 2,000+ UK gyms with no contract',saving:'18% commission on new members',url:aw(3422,'https://www.hussle.com/'),colour:'#3a9a5a',awin:true},
@@ -5083,7 +5147,7 @@ switch_save(){
     {id:'mind',label:'Mental health & therapy',icon:'🧠',desc:'Online therapy, counselling & mindfulness',partners:[
       {name:'Psychotherapy Unlimited',desc:'Licensed therapists · Flexible sessions',saving:'40% commission · Avg £48/referral',url:aw(111668,'https://psychotherapyunlimited.com/'),colour:'#3a9a5a',awin:true},
       {name:'BetterHelp',desc:'UK\'s largest online therapy platform',saving:'First week free',url:'https://www.betterhelp.com/',colour:'#1a7fe8'},
-      {name:'Calm',desc:'Sleep, meditation & relaxation app',saving:'7-day free trial',url:'https://www.calm.com/',colour:'#c9a84c'},
+      {name:'Calm',desc:'Sleep, meditation & relaxation app',saving:'',url:'https://www.calm.com/',colour:'#c9a84c'},
       {name:'Headspace',desc:'Guided meditation & mindfulness',saving:'Free trial available',url:'https://www.headspace.com/',colour:'#e87a1a'},
     ]},
     {id:'debt',label:'Debt support',icon:'💷',desc:'Free debt advice, management plans & solutions',partners:[
@@ -5397,6 +5461,7 @@ Example:
 <div class="footer">Aquipax &middot; by JeanieIQ</div>`;},
 
 spending_patterns(){
+  if(!state.isPremium)return screens.upgrade.call(this);
   const history=state._spendingHistory||[];
   const loading=state._spendingHistoryLoading;
   // Sort by period descending
@@ -5692,7 +5757,7 @@ share_earn(){
 
 <div class="insight">
   <div class="insight-label">How it works</div>
-  <div style="font-size:12px;color:#7a9cc0;line-height:1.65">Share your link. When 3 friends subscribe to Aquipax, you automatically get 3 months of Aquipax Plus completely free — worth £8.97. No catches, no limits on how many times you can earn.</div>
+  <div style="font-size:12px;color:#7a9cc0;line-height:1.65">Share your link. When 3 friends subscribe to Aquipax, you automatically get 3 months of Aquipax Plus completely free — worth £17.97. No catches, no limits on how many times you can earn.</div>
 </div>
 
 <button class="ghost" onclick="go('frontdoor')">&larr; Home</button>
@@ -5855,6 +5920,7 @@ ${hrData.length>0?`<div class="card" style="margin-bottom:14px">
 <div class="footer">Aquipax &middot; by JeanieIQ</div>`;},
 
 tracker(){
+  if(!state.isPremium)return screens.upgrade.call(this);
   return`${logoWithHelp('tracker')}
 <h2>📍 Activity Tracker</h2>
 <p class="sub">Track your run, walk, or cycle with live GPS. Your route is mapped in real time.</p>
@@ -8036,6 +8102,7 @@ function buildJeanieContext(){
 }
 
 window.openJeanie=function(){
+  if(!state.isPremium){requirePlus("ask_jeanie");return;}
   let modal=document.getElementById('modal');
   if(!modal){
     modal=document.createElement('div');
@@ -9426,8 +9493,12 @@ window.startTracker=async function(){
   // Init Leaflet map or invalidate size on resume
   if(!_trackerState.map&&document.getElementById('trackerMap')){
     _trackerState.map=L.map('trackerMap',{zoomControl:true,attributionControl:false});
+    // Set a default UK view to prevent 'center and zoom' error
+    _trackerState.map.setView([51.5,-0.1],13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(_trackerState.map);
     _trackerState.routeLine=L.polyline([],{color:'#3a9a5a',weight:4}).addTo(_trackerState.map);
+    // Invalidate size after render to fix WebView tile issue
+    setTimeout(()=>{try{_trackerState.map.invalidateSize();}catch(e){}},300);
   } else if(_trackerState.map){
     // Invalidate size after resume to fix tile rendering
     setTimeout(()=>{try{_trackerState.map.invalidateSize();}catch(e){}},100);
