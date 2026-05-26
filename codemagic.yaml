@@ -118,7 +118,7 @@ workflows:
       - name: Build iOS IPA
         script: |
           cd ios/App
-          agvtool new-version -all 4
+          agvtool new-version -all 5
           cd ../..
           xcode-project build-ipa \
             --workspace "ios/App/App.xcworkspace" \
